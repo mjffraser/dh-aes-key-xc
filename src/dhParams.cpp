@@ -4,6 +4,15 @@
 
 namespace dh {
 
+void DHParams::setGeneralFields(std::optional<std::string> &path) {
+	if (path.has_value()) {
+		//TODO path validation
+		logPath = path.value();
+	}
+
+	generalSet = true;
+}
+
 void DHParams::setNetworkFields(std::optional<unsigned int> &bitsVal, const std::string &ipVal, const unsigned int portVal) {
 	if (bitsVal.has_value()) {
 		if (bitsVal.value() % 1024 == 0)

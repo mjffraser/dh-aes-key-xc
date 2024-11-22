@@ -1,4 +1,5 @@
 #include "logging/logger.hpp"
+#include <iostream>
 
 namespace dh {
 
@@ -16,10 +17,25 @@ int Logger::flushBuffer() {
 	return 0;
 }
 
+int Logger::initialize(const std::string& path) {
+	if (setup)
+		return 0;
+
+	buffer.fill('\x0');
+	logFile.open(path);
+	if (!logFile) {
+		std::cerr << "[WARN] Could not open the log file. No logging will take place." << std::endl;
+		return 1;
+	}
+
+	setup = true;
+	return 0;
+}
+
 int Logger::appendToLog(const std::string& message) {
 	uint16_t remainingSize = BUFFER_SIZE - bufferTail;
 	
-	//check +1 since we add newline char after message to keep log clean
+	//check size+1 since we add newline char after message to keep log clean
 	if ((message.size() + 1) > remainingSize) {
 		int res = flushBuffer();
 		if (res == 1)

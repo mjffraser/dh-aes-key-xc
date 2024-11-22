@@ -52,8 +52,8 @@ private:
 
 	//networking fields
 	bool				 networkSet = false;
-	unsigned int bits       = 2048; //p bits
-	std::string  ipAddr     = "127.0.0.1"; //ip for connection/listening
+	unsigned int bits       = 2048;
+	std::string  ipAddr     = "127.0.0.1";
 	unsigned int port       = 8080;
 	
 	//public dh fields
@@ -85,6 +85,8 @@ public:
 		static DHParams instance;
 		return instance;
 	}
+	
+	//COPY & MOVE
 	DHParams(DHParams const&)				= delete;
 	void operator=(DHParams const&) = delete;
 

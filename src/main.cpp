@@ -1,10 +1,11 @@
 #include "logging/logger.hpp"
-#include "dhParams.hpp"
-
 
 int main() {
-	dh::Logger logger("log.txt");
-	logger.appendToLog("hiii");
-	logger.appendToLog("hello");
+	dh::Logger& log = dh::Logger::get();
+	log.initialize("test.txt");
+	log.appendToLog("one");
+	log.appendToLog("two");
+	log.appendToLog("three");
+
 	return 0;
 }

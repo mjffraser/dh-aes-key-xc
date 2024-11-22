@@ -4,38 +4,55 @@
 
 namespace dh {
 
-void DHParams::setGeneralFields(std::optional<std::string> &path) {
-	if (path.has_value()) {
-		//TODO path validation
+void DHParams::setGeneralFields(std::optional<std::string>& path, std::optional<bool>& db) {
+	//no changing values after they're set
+	if (generalSet)
+		return;
+
+	if (path)
 		logPath = path.value();
-	}
+	if (db)
+		debugFlag = db.value();
 
 	generalSet = true;
 }
 
-void DHParams::setNetworkFields(std::optional<unsigned int> &bitsVal, const std::string &ipVal, const unsigned int portVal) {
-	if (bitsVal.has_value()) {
-		if (bitsVal.value() % 1024 == 0)
-			bits = bitsVal.value();
-	}
+void DHParams::setNetworkFields(std::optional<unsigned int>& bitsAmount, std::optional<std::string>& ip, std::optional<unsigned int>& portNo) {
+	//no changing values after they're set
+	if (networkSet) 
+		return;
 
-	ipAddr = ipVal;
-	port = portVal;	
+	if (bitsAmount)
+		bits = bitsAmount.value();
+	if (ip)
+		ipAddr = ip.value();
+	if (portNo)
+		port = portNo.value();
 
-	//TODO validate params before setting this true	
 	networkSet = true;
 }
 
-void DHParams::setDHFields(const Num &pVal, const Num &gVal, const Num &aVal, const Num &AVal, const Num &BVal, const Num &keyVal) {
-	p = pVal;
-	g = gVal;
-	a = aVal;
-	A = AVal;
-	B = BVal;
-	key = keyVal;
+void DHParams::setPublicDHFields(const Num& p, const Num& g) {
+	//no changing values after they're set
+	if (dhPublicSet)
+		return;
+
+	_p = p;
+	_g = g;
 
 	//TODO validate params before setting this true
-	dhSet = true;
+	dhPublicSet = true;
+}
+
+void DHParams::setPrivateDHFields(const Num& a, const Num& A, const Num& B, const Num& key) {
+	//no changing values after they're set
+	if (dhPrivateSet)
+		return;
+
+	_a   = a;
+	_A   = A;
+	_B   = B;
+	_key = key;
 }
 
 }

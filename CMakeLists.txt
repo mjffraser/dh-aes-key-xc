@@ -7,20 +7,20 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 #logging source files
 set(DH_LOGGING_SRC
-	src/logging/logger.cpp
+	src/logger.cpp
 )
 
-set(DH_CONFIG_SRC
-	src/config/getConfig.cpp
-	src/config/internal/import.cpp
-	src/config/internal/validate.cpp
+set(DH_CMDLINE_ARGS_SRC
+	src/readArgs/readArgs.cpp
+	src/readArgs/internal/general.cpp
+	src/readArgs/internal/networking.cpp
 )
 
 set(ALL_SRC
 	src/main.cpp
 	src/dhParams.cpp
 	${DH_LOGGING_SRC}
-	${DH_CONFIG_SRC}
+	${DH_CMDLINE_ARGS_SRC}
 )
 
 add_executable(dh-key-xc ${ALL_SRC})

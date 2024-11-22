@@ -1,4 +1,4 @@
-#include "logging/logger.hpp"
+#include "logger.hpp"
 #include <iostream>
 
 namespace dh {

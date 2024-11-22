@@ -5,11 +5,6 @@ set(CMAKE_CXX_STANDARD 17)
 #symbols for clang lsp
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-#logging source files
-set(DH_LOGGING_SRC
-	src/logger.cpp
-)
-
 set(DH_CMDLINE_ARGS_SRC
 	src/readArgs/readArgs.cpp
 	src/readArgs/internal/general.cpp
@@ -19,7 +14,7 @@ set(DH_CMDLINE_ARGS_SRC
 set(ALL_SRC
 	src/main.cpp
 	src/dhParams.cpp
-	${DH_LOGGING_SRC}
+	src/logger.cpp
 	${DH_CMDLINE_ARGS_SRC}
 )
 

@@ -12,21 +12,23 @@ void parseGeneralFields(int argc, char* argv[]) {
 		std::string arg(argv[i]);
 		
 		//debug flag (DEFAULT - FALSE)
-		if (arg == "--debug" || arg == "--db") {
+		if (arg == "--debug" || arg == "-d") {
 			debug.value() = true;
 		} 
 	
 		//vetted primes flag (DEFAULT - TRUE (use vetted primes))
-		else if (arg == "--generatePrime" || arg == "--gp")  {
+		else if (arg == "--generatePrimes")  {
 			useVettedPrimes = false;
 		} 
 
 		//log path (should be followed by path so: --log /home/.../log.txt)
 		//relative paths are also allowed (so: --log log.txt)
-		//we don't check the user input here, it's verified by the logger before it attempts to open it
-		else if (arg == "--logPath" || "--log") {
+		//TODO: add path regex
+		else if (arg == "--logPath" || "-l") {
 			if ((i+1) < argc) {
-				logPath.value() = argv[i+1];
+				std::string path(argv[i+1]);
+				//validate
+				logPath.value() = path;
 				++i; //extra increment to jump over path
 			} else {
 				std::cout << "[WARN] No log path supplied. USAGE: --logPath [path]" << std::endl;

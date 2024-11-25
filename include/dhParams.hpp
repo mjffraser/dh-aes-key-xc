@@ -48,7 +48,7 @@ private:
 	//general
 	bool				generalSet      = false;
 	bool				debugFlag       = false;
-	bool				useVettedPrimes = true;
+	bool				vettedPrimes = true;
 	std::string logPath         = "";
 
 	//networking fields
@@ -92,23 +92,24 @@ public:
 	DHParams(DHParams const&)				= delete;
 	void operator=(DHParams const&) = delete;
 
-	void setGeneralFields(std::optional<std::string>& path, std::optional<bool>& db, std::optional<bool>& vettedPrimes);
+	void setGeneralFields(std::optional<std::string>& path, std::optional<bool>& db, std::optional<bool>& vp);
 	void setNetworkFields(bool serverFlag, std::optional<unsigned int>& bitAmount, std::optional<std::string> & ip, std::optional<unsigned int>& portNo);
 	void setPublicDHFields(const Num& p, const Num& g);
 	void setPrivateDHFields(const Num& a, const Num& A, const Num& B, const Num& key);
 
-	bool												debug()    { return debugFlag;                      }
-	bool												isServer() { return server;													}
-	std::optional<std::string>  getPath()  { return retOkay(logPath, generalSet);   }
-	std::optional<unsigned int> getBits()  { return retOkay(bits,    networkSet);   }
-	std::optional<std::string>  getIP()    { return retOkay(ipAddr,  networkSet);   }
-	std::optional<unsigned int> getPort()  { return retOkay(port,    networkSet);   }
-	std::optional<Num>					p()        { return retOkay(_p,      dhPublicSet);  }
-	std::optional<Num>					g()        { return retOkay(_g,      dhPublicSet);  }
-	std::optional<Num>					a()        { return retOkay(_a,      dhPrivateSet); }
-	std::optional<Num>					A()        { return retOkay(_A,      dhPrivateSet); }
-	std::optional<Num>					B()        { return retOkay(_B,      dhPrivateSet); }
-	std::optional<Num>					key()      { return retOkay(_key,    dhPrivateSet); }
+	bool												debug()           { return debugFlag;                      }
+	bool												isServer()        { return server;												 }
+	bool												useVettedPrimes() { return vettedPrimes;									 }
+	std::optional<std::string>  getPath()         { return retOkay(logPath, generalSet);   }
+	std::optional<unsigned int> getBits()         { return retOkay(bits,    networkSet);   }
+	std::optional<std::string>  getIP()           { return retOkay(ipAddr,  networkSet);   }
+	std::optional<unsigned int> getPort()         { return retOkay(port,    networkSet);   }
+	std::optional<Num>					p()               { return retOkay(_p,      dhPublicSet);  }
+	std::optional<Num>					g()               { return retOkay(_g,      dhPublicSet);  }
+	std::optional<Num>					a()               { return retOkay(_a,      dhPrivateSet); }
+	std::optional<Num>					A()               { return retOkay(_A,      dhPrivateSet); }
+	std::optional<Num>					B()               { return retOkay(_B,      dhPrivateSet); }
+	std::optional<Num>					key()             { return retOkay(_key,    dhPrivateSet); }
 
 };
 

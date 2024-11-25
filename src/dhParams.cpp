@@ -4,7 +4,7 @@
 
 namespace dh {
 
-void DHParams::setGeneralFields(std::optional<std::string>& path, std::optional<bool>& db, std::optional<bool>& vettedPrimes) {
+void DHParams::setGeneralFields(std::optional<std::string>& path, std::optional<bool>& db, std::optional<bool>& vp) {
 	//no changing values after they're set
 	if (generalSet)
 		return;
@@ -13,8 +13,8 @@ void DHParams::setGeneralFields(std::optional<std::string>& path, std::optional<
 		logPath = path.value();
 	if (db)
 		debugFlag = db.value();
-	if (vettedPrimes)
-		useVettedPrimes = vettedPrimes.value();
+	if (vp)
+		vettedPrimes = vp.value();
 
 	generalSet = true;
 }

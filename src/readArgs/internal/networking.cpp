@@ -1,9 +1,25 @@
 #include "dhParams.hpp"
+#include <regex>
 #include <string>
 #include <unordered_set>
 #include "readArgs/internal/networking.hpp"
 
 namespace dh {
+
+//sourced from: https://stackoverflow.com/questions/5284147/validating-ipv4-addresses-with-regexp
+static const std::regex ipPattern{R"(^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$)"};
+
+bool validateIP(const std::string& ip) {
+	if (ip.empty()) {
+		std::cout << "[WARN] No IP address supplied. Using localhost." << std::endl;
+		return false;
+	}
+
+	bool result = std::regex_match(ip, ipPattern);
+	if (!result)
+		std::cout << "[WARN] IP Address supplied doesn't appear to be valid IPv4 address. Using localhost." << std::endl;
+	return result;
+}
 
 int parseNetworkingFields(int argc, char* argv[]) {
 	//note that setNetworkFields wants a bool value. serverFlag being std::optional is to check it's actually set
@@ -17,43 +33,42 @@ int parseNetworkingFields(int argc, char* argv[]) {
 
 		//server/client flag
 		if (arg == "--server" || arg == "-s") {
-			serverFlag.value() = true;
+			serverFlag = true;
 		} else if (arg == "--client" || arg == "-c") {
-			serverFlag.value() = false;
+			serverFlag = false;
 		} 
 
 		//bits
-		else if (arg == "--pBits" || "-b") {
+		else if (arg == "--pBits" || arg == "-b") {
 			if ((i+1) < argc) {
 				unsigned int bitsVal = (unsigned int) std::stoul(argv[i+1]);
 				
 				//supporting 1024, 2048 (DEFAULT), 4096
 				std::unordered_set<unsigned int> validBits = {1024, 2048, 4096};
         if (validBits.count(bitsVal)) {
-					bits.value() = bitsVal;
+					bits = bitsVal;
         } else {
 					std::cout << "[WARN] Supplied bit amount for prime p is not one of {1024, 2048, 4096}." << std::endl;
           std::cout << "Supplied bit value: " << bitsVal << std::endl;
 					std::cout << "Default (2048) will be used." << std::endl;
         }	
-
+				
 				++i;
 			}
 		}
 
 		//ip
-		//TODO: add regex to validate
 		else if (arg == "--ip" || "-i") {
 			if ((i+1) < argc) {
 				std::string addr(argv[i+1]);
-				//validate
-				ip.value() = addr;
+				if (validateIP(addr))
+					ip = addr;
 				++i;
 			}
 		}
 			
 		//port number
-		else if (arg == "--port" || "-p") {
+		else if (arg == "--port" || arg == "-p") {
 			if ((i+1) < argc) {
 				unsigned int portNo = (unsigned int) std::stoul(argv[i+1]);
 
@@ -66,7 +81,7 @@ int parseNetworkingFields(int argc, char* argv[]) {
 				}
 				
 				++i;
-				port.value() = portNo;
+				port = portNo;
 			}
 		}
 	}

@@ -1,8 +1,9 @@
-#include "logger.hpp"
+#include "readArgs/readArgs.hpp"
 
 int main(int argc, char* argv[]) {
 	//read args, init general & network fields
-		
+	if (dh::parseArgs(argc, argv) == 1)
+		return 1;
 
 	//if server, pick p & g, generate a
 	

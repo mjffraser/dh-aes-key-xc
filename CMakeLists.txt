@@ -11,6 +11,13 @@ set(DH_CMDLINE_ARGS_SRC
 	src/readArgs/internal/networking.cpp
 )
 
+set(DH_PARAMETER_GEN_SRC
+	src/dhParamGen/private.cpp
+	src/dhParamGen/public.cpp
+	src/dhParamGen/internal/getRandomBytes.cpp
+	src/dhParamGen/internal/vettedPrimes.cpp
+)
+
 set(ALL_SRC
 	src/main.cpp
 	src/dhParams.cpp

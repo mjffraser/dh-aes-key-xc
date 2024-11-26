@@ -35,7 +35,7 @@ void DHParams::setNetworkFields(bool serverFlag, std::optional<unsigned int>& bi
 	networkSet = true;
 }
 
-void DHParams::setPublicDHFields(const Num& p, const Num& g) {
+void DHParams::setPublicDHFields(const cpp_int& p, const cpp_int& g) {
 	//no changing values after they're set
 	if (dhPublicSet)
 		return;
@@ -46,7 +46,7 @@ void DHParams::setPublicDHFields(const Num& p, const Num& g) {
 	dhPublicSet = true;
 }
 
-void DHParams::setPrivateDHFields(const Num& a, const Num& A, const Num& B, const Num& key) {
+void DHParams::setPrivateDHFields(const cpp_int& a, const cpp_int& A, const cpp_int& B, const cpp_int& key) {
 	//no changing values after they're set
 	if (dhPrivateSet)
 		return;

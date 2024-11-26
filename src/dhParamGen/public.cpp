@@ -2,8 +2,8 @@
 
 namespace dh {
 
-std::pair<Num, Num> selectPublicDHParams() {
-	return std::make_pair(Num(), Num());
+std::pair<cpp_int, cpp_int> selectPublicDHParams() {
+	return std::make_pair(cpp_int(), cpp_int());
 }
 
 }

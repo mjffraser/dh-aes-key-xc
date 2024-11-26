@@ -1,6 +1,17 @@
 #pragma once
 
+#include <string>
 namespace dh {
+
+static std::string cleanString(const char* P_BIT_STRING) {
+	std::string cleaned = "0x";
+	for (const char* c = P_BIT_STRING; *c; ++c) {
+		if (*c != ' ')
+			cleaned += *c;
+	}
+
+	return cleaned;
+}
 
 constexpr int					G_ALL_BITS  = 2;
 constexpr const char* P_1536_BITS = "FFFFFFFF FFFFFFFF C90FDAA2 2168C234 C4C6628B 80DC1CD1"

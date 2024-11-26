@@ -2,16 +2,16 @@
 
 namespace dh {
 
-Num generate_a(Num& p, Num& g) {
-	return Num();
+cpp_int generate_a(cpp_int& p, cpp_int& g) {
+	return cpp_int();
 }
 
-Num generate_A(Num& p, Num& g, Num& a) {
-	return Num();
+cpp_int generate_A(cpp_int& p, cpp_int& g, cpp_int& a) {
+	return cpp_int();
 }
 
-Num generate_key(Num& p, Num& a, Num& B) {
-	return Num();
+cpp_int generate_key(cpp_int& p, cpp_int& a, cpp_int& B) {
+	return cpp_int();
 }
 
 }

@@ -1,13 +1,13 @@
 #pragma once
 
-#include "num.hpp"
+#include "dhParams.hpp" 
 
 //Generation for private DH values done by server and client.
 
 namespace dh {
 
-Num generate_a   (Num& p, Num& g);
-Num generate_A   (Num& p, Num& g, Num& a);
-Num generate_key (Num& p, Num& a, Num& B);
+cpp_int generate_a   (cpp_int& p, cpp_int& g);
+cpp_int generate_A   (cpp_int& p, cpp_int& g, cpp_int& a);
+cpp_int generate_key (cpp_int& p, cpp_int& a, cpp_int& B);
 
 }

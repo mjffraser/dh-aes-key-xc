@@ -1,9 +1,12 @@
 #pragma once
 
-#include "num.hpp"
+#include <boost/multiprecision/cpp_int.hpp>
 
+#include <boost/multiprecision/number.hpp>
 #include <optional>
 #include <string>
+
+using cpp_int = boost::multiprecision::cpp_int;
 
 namespace dh {
 
@@ -39,6 +42,7 @@ namespace dh {
  * -> _key 
  *		Secret key to encrypt messages with. Derived from B^a mod p. Should not be disclosed.
  */
+
 class DHParams {
 private:
 	//enforce single instance
@@ -61,15 +65,15 @@ private:
 	//public dh fields
 	//these are decided by server, and must be recieved over socket by client
 	bool dhPublicSet = false;
-	Num _p;   
-	Num _g;		
+	cpp_int _p;   
+	cpp_int _g;		
 	
 	//private dh fields
 	bool dhPrivateSet = false;
-	Num _a;		
-	Num _A;		
-	Num _B;		
-	Num _key; 
+	cpp_int _a;		
+	cpp_int _A;		
+	cpp_int _B;		
+	cpp_int _key; 
 
 	//function to guard against a parameters use if it wasn't initialized properly
 	template <typename Param>
@@ -101,8 +105,8 @@ public:
 												std::optional<std::string> & ip, 
 												std::optional<unsigned int>& portNo);
 
-	void setPublicDHFields(const Num& p, const Num& g);
-	void setPrivateDHFields(const Num& a, const Num& A, const Num& B, const Num& key);
+	void setPublicDHFields(const cpp_int& p, const cpp_int& g);
+	void setPrivateDHFields(const cpp_int& a, const cpp_int& A, const cpp_int& B, const cpp_int& key);
 
 	bool												debug()           { return debugFlag;                      }
 	bool												isServer()        { return server;												 }
@@ -111,12 +115,12 @@ public:
 	std::optional<unsigned int> getBits()         { return retOkay(bits,    networkSet);   }
 	std::optional<std::string>  getIP()           { return retOkay(ipAddr,  networkSet);   }
 	std::optional<unsigned int> getPort()         { return retOkay(port,    networkSet);   }
-	std::optional<Num>					p()               { return retOkay(_p,      dhPublicSet);  }
-	std::optional<Num>					g()               { return retOkay(_g,      dhPublicSet);  }
-	std::optional<Num>					a()               { return retOkay(_a,      dhPrivateSet); }
-	std::optional<Num>					A()               { return retOkay(_A,      dhPrivateSet); }
-	std::optional<Num>					B()               { return retOkay(_B,      dhPrivateSet); }
-	std::optional<Num>					key()             { return retOkay(_key,    dhPrivateSet); }
+	std::optional<cpp_int>			p()               { return retOkay(_p,      dhPublicSet);  }
+	std::optional<cpp_int>			g()               { return retOkay(_g,      dhPublicSet);  }
+	std::optional<cpp_int>			a()               { return retOkay(_a,      dhPrivateSet); }
+	std::optional<cpp_int>			A()               { return retOkay(_A,      dhPrivateSet); }
+	std::optional<cpp_int>			B()               { return retOkay(_B,      dhPrivateSet); }
+	std::optional<cpp_int>			key()             { return retOkay(_key,    dhPrivateSet); }
 
 };
 

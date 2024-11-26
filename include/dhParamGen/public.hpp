@@ -1,6 +1,6 @@
 #pragma once
 
-#include "num.hpp"
+#include "dhParams.hpp"
 
 //Generation/Selection for public DH values done by server.
 
@@ -15,6 +15,6 @@ namespace dh {
  * depending on command line args a vetted pair <p,g> may 
  * be selected from a list.
  */
-std::pair<Num, Num> selectPublicDHParams();
+std::pair<cpp_int, cpp_int> selectPublicDHParams();
 
 }

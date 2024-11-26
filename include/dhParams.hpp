@@ -46,17 +46,17 @@ private:
 	~DHParams() {}
 
 	//general
-	bool				generalSet      = false;
-	bool				debugFlag       = false;
+	bool				generalSet   = false;
+	bool				debugFlag    = false;
 	bool				vettedPrimes = true;
-	std::string logPath         = "";
+	std::string logPath      = "";
 
 	//networking fields
-	bool				 networkSet     = false;
-	bool				 server         = false;
-	unsigned int bits           = 2048;
-	std::string  ipAddr         = "127.0.0.1";
-	unsigned int port           = 8080;
+	bool				 networkSet  = false;
+	bool				 server      = false;
+	unsigned int bits        = 2048;
+	std::string  ipAddr      = "127.0.0.1";
+	unsigned int port        = 8080;
 	
 	//public dh fields
 	//these are decided by server, and must be recieved over socket by client
@@ -92,8 +92,15 @@ public:
 	DHParams(DHParams const&)				= delete;
 	void operator=(DHParams const&) = delete;
 
-	void setGeneralFields(std::optional<std::string>& path, std::optional<bool>& db, std::optional<bool>& vp);
-	void setNetworkFields(bool serverFlag, std::optional<unsigned int>& bitAmount, std::optional<std::string> & ip, std::optional<unsigned int>& portNo);
+	void setGeneralFields(std::optional<std::string>&	 path, 
+												std::optional<bool>&				 db, 
+												std::optional<bool>&				 vp);
+
+	void setNetworkFields(bool												 serverFlag, 
+												std::optional<unsigned int>& bitAmount, 
+												std::optional<std::string> & ip, 
+												std::optional<unsigned int>& portNo);
+
 	void setPublicDHFields(const Num& p, const Num& g);
 	void setPrivateDHFields(const Num& a, const Num& A, const Num& B, const Num& key);
 

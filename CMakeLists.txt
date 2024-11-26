@@ -15,7 +15,6 @@ set(DH_PARAMETER_GEN_SRC
 	src/dhParamGen/private.cpp
 	src/dhParamGen/public.cpp
 	src/dhParamGen/internal/getRandomBytes.cpp
-	src/dhParamGen/internal/vettedPrimes.cpp
 )
 
 set(ALL_SRC

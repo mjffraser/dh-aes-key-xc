@@ -43,12 +43,12 @@ int parseNetworkingFields(int argc, char* argv[]) {
 			if ((i+1) < argc) {
 				unsigned int bitsVal = (unsigned int) std::stoul(argv[i+1]);
 				
-				//supporting 1024, 2048 (DEFAULT), 4096
-				std::unordered_set<unsigned int> validBits = {1024, 2048, 4096};
+				//supporting 1536, 2048 (DEFAULT), 3072, 4096, 6144, 8192
+				std::unordered_set<unsigned int> validBits = {1536, 2048, 3072, 4096, 6144, 8192};
         if (validBits.count(bitsVal)) {
 					bits = bitsVal;
         } else {
-					std::cout << "[WARN] Supplied bit amount for prime p is not one of {1024, 2048, 4096}." << std::endl;
+					std::cout << "[WARN] Supplied bit amount for prime p is not one of {1536, 2048, 3072, 4096, 6144, 8192}." << std::endl;
           std::cout << "Supplied bit value: " << bitsVal << std::endl;
 					std::cout << "Default (2048) will be used." << std::endl;
         }	

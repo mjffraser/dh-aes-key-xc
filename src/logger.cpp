@@ -3,15 +3,15 @@
 
 namespace dh {
 
-int Logger::flushBuffer() {
-	if (!logFile.is_open())
+int Logger::flush_buffer() {
+	if (!log_file.is_open())
 		return 1;
 	
-	if (bufferTail != 0) {
-		std::string contents(buffer.begin(), buffer.begin() + bufferTail);
-		logFile << contents;
+	if (buffer_tail != 0) {
+		std::string contents(buffer.begin(), buffer.begin() + buffer_tail);
+		log_file << contents;
 		buffer.fill('\x0');
-		bufferTail = 0;
+		buffer_tail = 0;
 	}
 
 	return 0;
@@ -22,8 +22,8 @@ int Logger::initialize(const std::string& path) {
 		return 0;
 
 	buffer.fill('\x0');
-	logFile.open(path);
-	if (!logFile) {
+	log_file.open(path);
+	if (!log_file) {
 		std::cerr << "[WARN] Could not open the log file. No logging will take place." << std::endl;
 		return 1;
 	}
@@ -32,23 +32,23 @@ int Logger::initialize(const std::string& path) {
 	return 0;
 }
 
-int Logger::appendToLog(const std::string& message) {
-	uint16_t remainingSize = BUFFER_SIZE - bufferTail;
+int Logger::append_to_log(const std::string& message) {
+	uint16_t remaining_size = BUFFER_SIZE - buffer_tail;
 	
 	//check size+1 since we add newline char after message to keep log clean
-	if ((message.size() + 1) > remainingSize) {
-		int res = flushBuffer();
+	if ((message.size() + 1) > remaining_size) {
+		int res = flush_buffer();
 		if (res == 1)
 			return 1;
 	} else {
-		std::copy(message.begin(), message.end(), buffer.begin() + bufferTail);
-		bufferTail += message.size();
-		buffer.at(bufferTail) = '\n';
-		bufferTail++;
+		std::copy(message.begin(), message.end(), buffer.begin() + buffer_tail);
+		buffer_tail += message.size();
+		buffer.at(buffer_tail) = '\n';
+		buffer_tail++;
 		return 0;
 	} 
 
-	return appendToLog(message);
+	return append_to_log(message);
 }
 
 }

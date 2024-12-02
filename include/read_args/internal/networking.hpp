@@ -12,6 +12,6 @@ namespace dh {
  *
  * returns 0 if all good, 1 on error
  */
-int parseNetworkingFields(int argc, char* argv[]);
+int parse_networking_fields(int argc, char* argv[]);
 	
 }

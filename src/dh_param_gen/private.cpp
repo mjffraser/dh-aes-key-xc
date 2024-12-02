@@ -1,4 +1,4 @@
-#include "dhParamGen/private.hpp"
+#include "dh_param_gen/private.hpp"
 
 namespace dh {
 

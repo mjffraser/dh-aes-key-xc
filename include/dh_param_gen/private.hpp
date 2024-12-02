@@ -1,6 +1,6 @@
 #pragma once
 
-#include "dhParams.hpp" 
+#include "dh_params.hpp" 
 
 //Generation for private DH values done by server and client.
 

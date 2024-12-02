@@ -1,16 +1,16 @@
-#include "dhParams.hpp"
-#include "readArgs/readArgs.hpp"
-#include "dhParamGen/public.hpp"
+#include "dh_params.hpp"
+#include "read_args/read_args.hpp"
+#include "dh_param_gen/public.hpp"
 
 int main(int argc, char* argv[]) {
 	//read args, init general & network fields
-	if (dh::parseArgs(argc, argv) == 1)
+	if (dh::parse_args(argc, argv) == 1)
 		return 1;
 
-	dh::DHParams& params = dh::DHParams::get();
+	dh::DH_Params& params = dh::DH_Params::get();
 	//if server, pick p & g, generate a
-	if (params.isServer()) {
-		auto[p, g] = dh::selectPublicDHParams();			
+	if (params.is_server()) {
+		auto[p, g] = dh::select_public_DH_params();			
 		
 	} 
 

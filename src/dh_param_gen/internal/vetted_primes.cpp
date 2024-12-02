@@ -1,4 +1,4 @@
-#include "dhParamGen/internal/vettedPrimes.hpp"
+#include "dh_param_gen/internal/vetted_primes.hpp"
 
 constexpr int					G_ALL_BITS  = 2;
 constexpr const char* P_1536_BITS = "FFFFFFFF FFFFFFFF C90FDAA2 2168C234 C4C6628B 80DC1CD1"
@@ -139,7 +139,7 @@ constexpr const char* P_8192_BITS = "FFFFFFFF FFFFFFFF C90FDAA2 2168C234 C4C6628
 
 namespace dh {
 
-std::string cleanString(const char* P_BIT_STRING) {
+std::string clean_string(const char* P_BIT_STRING) {
 	std::string cleaned = "0x";
 	for (const char* c = P_BIT_STRING; *c; ++c) {
 		if (*c != ' ')
@@ -150,20 +150,20 @@ std::string cleanString(const char* P_BIT_STRING) {
 }
 
 
-std::string getVettedP(unsigned int bits) {
+std::string get_vetted_p(unsigned int bits) {
 	switch (bits) {
-		case 1536: return cleanString(P_1536_BITS);
-		case 2048: return cleanString(P_2048_BITS);
-		case 3072: return cleanString(P_3072_BITS);
-		case 4096: return cleanString(P_4096_BITS);
-		case 6144: return cleanString(P_6144_BITS);
-		case 8192: return cleanString(P_8192_BITS);
-		default:   return cleanString(P_2048_BITS); //the default of DHParams is also this
+		case 1536: return clean_string(P_1536_BITS);
+		case 2048: return clean_string(P_2048_BITS);
+		case 3072: return clean_string(P_3072_BITS);
+		case 4096: return clean_string(P_4096_BITS);
+		case 6144: return clean_string(P_6144_BITS);
+		case 8192: return clean_string(P_8192_BITS);
+		default:   return clean_string(P_2048_BITS); //the default of DHParams is also this
 	}
 }
 
 
-int getVettedG() {
+int get_vetted_g() {
 	return G_ALL_BITS; 
 }
 

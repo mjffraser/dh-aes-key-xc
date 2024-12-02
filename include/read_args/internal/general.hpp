@@ -12,6 +12,6 @@ namespace dh {
  *
  * On any error defaults are used.
  */
-void parseGeneralFields(int argc, char* argv[]);
+void parse_general_fields(int argc, char* argv[]);
 
 }

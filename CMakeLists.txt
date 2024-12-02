@@ -10,23 +10,23 @@ find_package(Boost CONFIG)
 
 
 set(DH_CMDLINE_ARGS_SRC
-	src/readArgs/readArgs.cpp
-	src/readArgs/internal/general.cpp
-	src/readArgs/internal/networking.cpp
+	src/read_args/read_args.cpp
+	src/read_args/internal/general.cpp
+	src/read_args/internal/networking.cpp
 )
 
 set(DH_PARAMETER_GEN_SRC
-	src/dhParamGen/internal/vettedPrimes.cpp
-	src/dhParamGen/internal/randomUtil.cpp
-	src/dhParamGen/private.cpp
-	src/dhParamGen/public.cpp
+	src/dh_param_gen/internal/vetted_primes.cpp
+	src/dh_param_gen/internal/random_util.cpp
+	src/dh_param_gen/private.cpp
+	src/dh_param_gen/public.cpp
 )
 
 set(ALL_SRC
 	${DH_PARAMETER_GEN_SRC}
 	${DH_CMDLINE_ARGS_SRC}
 	src/main.cpp
-	src/dhParams.cpp
+	src/dh_params.cpp
 	src/logger.cpp
 )
 

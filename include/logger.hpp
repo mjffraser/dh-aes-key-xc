@@ -16,10 +16,10 @@ private:
 
 	//buffer to store messages before writing
 	std::array<char, BUFFER_SIZE> buffer;
-	std::size_t bufferTail = 0; //index of first unused buffer char
+	std::size_t buffer_tail = 0; //index of first unused buffer char
 
 	//the log file to write to
-	std::ofstream logFile;
+	std::ofstream log_file;
 
 	/*
 	 * flushBuffer:
@@ -27,7 +27,7 @@ private:
 	 *
 	 *	returns -> 0 on success, 1 on error
 	 */
-	int flushBuffer();
+	int flush_buffer();
 
 	//enforce single instance
 	//CONSTRUCTOR
@@ -35,7 +35,7 @@ private:
 
 	//DESTRUCTOR
 	~Logger() {
-		(void) flushBuffer();
+		(void) flush_buffer();
 	}
 
 public:
@@ -54,7 +54,7 @@ public:
 	 *
 	 *	returns -> 0 on success, 1 on error
 	 */
-	int appendToLog(const std::string& message);  
+	int append_to_log(const std::string& message);  
 		
 	//GET INSTANCE HERE
 	static Logger& get() {

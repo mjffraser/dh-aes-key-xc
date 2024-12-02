@@ -12,6 +12,6 @@ namespace dh {
  *
  * returns 0 if all good, 1 on error
  */
-int parseArgs(int argc, char* argv[]);
+int parse_args(int argc, char* argv[]);
 	
 }

@@ -16,16 +16,18 @@ set(DH_CMDLINE_ARGS_SRC
 )
 
 set(DH_PARAMETER_GEN_SRC
+	src/dhParamGen/internal/vettedPrimes.cpp
+	src/dhParamGen/internal/randomUtil.cpp
 	src/dhParamGen/private.cpp
 	src/dhParamGen/public.cpp
-	src/dhParamGen/internal/getRandomBytes.cpp
 )
 
 set(ALL_SRC
+	${DH_PARAMETER_GEN_SRC}
+	${DH_CMDLINE_ARGS_SRC}
 	src/main.cpp
 	src/dhParams.cpp
 	src/logger.cpp
-	${DH_CMDLINE_ARGS_SRC}
 )
 
 add_executable(dh-key-xc ${ALL_SRC})

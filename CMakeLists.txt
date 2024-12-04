@@ -6,8 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(Boost CONFIG)
-
-
+find_package(OpenSSL REQUIRED)
 
 set(DH_CMDLINE_ARGS_SRC
 	src/read_args/read_args.cpp
@@ -17,14 +16,20 @@ set(DH_CMDLINE_ARGS_SRC
 
 set(DH_PARAMETER_GEN_SRC
 	src/dh_param_gen/internal/vetted_primes.cpp
-	src/dh_param_gen/internal/random_util.cpp
 	src/dh_param_gen/private.cpp
 	src/dh_param_gen/public.cpp
+)
+
+set(AES_ENCRYPTION_SRC
+	src/encrypt/encrypt.cpp
+	src/encrypt/keygen.cpp
 )
 
 set(ALL_SRC
 	${DH_PARAMETER_GEN_SRC}
 	${DH_CMDLINE_ARGS_SRC}
+	${AES_ENCRYPTION_SRC}
+	src/rand/random_util.cpp
 	src/main.cpp
 	src/dh_params.cpp
 	src/logger.cpp
@@ -39,5 +44,5 @@ endif()
 
 if(Boost_FOUND)
 	target_include_directories(dh-key-xc PRIVATE ${Boost_INCLUDE_DIRS})
-	target_link_libraries(dh-key-xc PRIVATE ${Boost_LIBRARIES} -lboost_random)
+	target_link_libraries(dh-key-xc PRIVATE ${Boost_LIBRARIES} -lboost_random OpenSSL::SSL)
 endif()

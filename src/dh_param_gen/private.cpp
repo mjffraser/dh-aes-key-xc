@@ -1,5 +1,5 @@
 #include "dh_param_gen/private.hpp"
-#include "dh_param_gen/internal/random_util.hpp"
+#include "rand/random_util.hpp"
 #include "logger.hpp"
 
 namespace dh {

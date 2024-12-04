@@ -10,8 +10,8 @@ cpp_int generate_a() {
 
 	//We choose our secret exponent a [1, 2^256]
 	//b/c of NFS's we don't really gain anything by making a any bigger.
-	cpp_int lower(2);			//lower bound
-	cpp_int upper(2^256); //upper bound
+	cpp_int lower(2);									 //lower bound
+	cpp_int upper(2); upper = boost::multiprecision::pow(upper, 256); //upper bound
 	cpp_int a = rand_between(lower, upper);
 	if (params.debug())
 		log.append_to_log("[LOG] Using a=" + a.str());

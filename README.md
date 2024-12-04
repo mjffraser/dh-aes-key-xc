@@ -15,4 +15,4 @@ If you'd like to read more about CWE-215:
 
 [Blog Post 1 Link]() \
 [Blog Post 2 Link]() \
-[Video Link]() \
+[Video Link]() 

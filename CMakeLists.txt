@@ -39,5 +39,5 @@ endif()
 
 if(Boost_FOUND)
 	target_include_directories(dh-key-xc PRIVATE ${Boost_INCLUDE_DIRS})
-	target_link_libraries(dh-key-xc PRIVATE ${Boost_LIBRARIES})
+	target_link_libraries(dh-key-xc PRIVATE ${Boost_LIBRARIES} -lboost_random)
 endif()

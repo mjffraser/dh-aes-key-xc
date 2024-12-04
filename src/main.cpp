@@ -1,6 +1,14 @@
-#include "dh_params.hpp"
+//param parsing
 #include "read_args/read_args.hpp"
+
+//dh param selection
 #include "dh_param_gen/public.hpp"
+#include "dh_param_gen/private.hpp"
+
+//socket
+
+//namespace stuff
+#include "dh_params.hpp"
 
 int main(int argc, char* argv[]) {
 	//read args, init general & network fields
@@ -8,14 +16,17 @@ int main(int argc, char* argv[]) {
 		return 1;
 
 	dh::DH_Params& params = dh::DH_Params::get();
-	//if server, pick p & g, generate a
 	if (params.is_server()) {
+		//if server, pick p & g, generate a
 		auto[p, g] = dh::select_public_DH_params();			
+		cpp_int a  = dh::generate_a();
+
+		//then open socket to listen for client
 		
 	} 
 
-	//if client, recieve p & g, generate a, send A
 	else {
+		//if client, recieve p & g, generate a, send A
 
 	}
 	

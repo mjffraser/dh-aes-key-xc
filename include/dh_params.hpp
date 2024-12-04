@@ -1,12 +1,13 @@
 #pragma once
 
 #include <boost/multiprecision/cpp_int.hpp>
-
 #include <boost/multiprecision/number.hpp>
+
 #include <optional>
 #include <string>
 
-using cpp_int = boost::multiprecision::cpp_int;
+
+using namespace boost::multiprecision;
 
 namespace dh {
 

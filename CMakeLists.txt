@@ -21,7 +21,7 @@ set(DH_PARAMETER_GEN_SRC
 )
 
 set(AES_ENCRYPTION_SRC
-	src/encrypt/encrypt.cpp
+	src/encrypt/aes_gcm.cpp
 	src/encrypt/keygen.cpp
 )
 
@@ -33,6 +33,7 @@ set(ALL_SRC
 	src/main.cpp
 	src/dh_params.cpp
 	src/logger.cpp
+	src/debug.cpp
 )
 
 add_executable(dh-key-xc ${ALL_SRC})

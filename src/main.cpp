@@ -1,5 +1,3 @@
-#include "encrypt/keygen.hpp"
-
 //param parsing
 #include "read_args/read_args.hpp"
 
@@ -22,9 +20,7 @@ int main(int argc, char* argv[]) {
 		//if server, pick p & g, generate a
 		auto[p, g] = dh::select_public_DH_params();			
 		cpp_int a  = dh::generate_a();
-
-		auto back = dh::aes_keygen(a);
-
+		
 		//then open socket to listen for client
 		
 	} 

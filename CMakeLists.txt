@@ -25,10 +25,16 @@ set(AES_ENCRYPTION_SRC
 	src/encrypt/keygen.cpp
 )
 
+set(NETWORK_SRC
+	src/networking/server.cpp
+	src/networking/client.cpp
+)
+
 set(ALL_SRC
 	${DH_PARAMETER_GEN_SRC}
 	${DH_CMDLINE_ARGS_SRC}
 	${AES_ENCRYPTION_SRC}
+	${NETWORKING_SRC}
 	src/rand/random_util.cpp
 	src/main.cpp
 	src/dh_params.cpp
@@ -47,3 +53,4 @@ if(Boost_FOUND)
 	target_include_directories(dh-key-xc PRIVATE ${Boost_INCLUDE_DIRS})
 	target_link_libraries(dh-key-xc PRIVATE ${Boost_LIBRARIES} -lboost_random OpenSSL::SSL)
 endif()
+

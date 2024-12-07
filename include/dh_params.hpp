@@ -39,7 +39,7 @@ namespace dh {
  * -> _A
  *		Public value for this server/client instance. Derived from g^a mod p.
  * -> _B
- *		Public value recieved from server/client on other end.
+ *		Public value received from server/client on other end.
  * -> _key 
  *		Secret key to encrypt messages with. Derived from B^a mod p. Should not be disclosed.
  */
@@ -54,17 +54,17 @@ private:
 	bool				general_set   = false;
 	bool				debug_flag    = false;
 	bool				vetted_primes = true;
-	std::string log_path      = "";
+	std::string log_path      = "log";
 
 	//networking fields
 	bool				 network_set  = false;
 	bool				 server       = false;
 	unsigned int bits         = 2048;
 	std::string  ip_addr      = "127.0.0.1";
-	unsigned int port         = 8080;
+	unsigned int port         = 65000;
 	
 	//public dh fields
-	//these are decided by server, and must be recieved over socket by client
+	//these are decided by server, and must be received over socket by client
 	bool dh_public_set = false;
 	cpp_int _p;   
 	cpp_int _g;		

@@ -28,13 +28,14 @@ set(AES_ENCRYPTION_SRC
 set(NETWORK_SRC
 	src/networking/server.cpp
 	src/networking/client.cpp
+	src/networking/internal/socket_util.cpp
 )
 
 set(ALL_SRC
 	${DH_PARAMETER_GEN_SRC}
 	${DH_CMDLINE_ARGS_SRC}
 	${AES_ENCRYPTION_SRC}
-	${NETWORKING_SRC}
+	${NETWORK_SRC}
 	src/rand/random_util.cpp
 	src/main.cpp
 	src/dh_params.cpp

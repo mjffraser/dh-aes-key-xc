@@ -33,12 +33,12 @@ cpp_int establish_DH_key();
 /*
  * recv_encrypted_message
  *
- * Recieves the AES encrypted message and tag from the client,
+ * Receives the AES encrypted message and tag from the client,
  * decrypts it, and writes to the provided plaintext buffer. 
  *
- * This function expects that the client just recieved B, and is
+ * This function expects that the client just received B, and is
  * calculating the AES key, which is slow. An extra timeout delay
- * is inserted while waiting to recieve the message.
+ * is inserted while waiting to receive the message.
  *
  * Expects:
  * - buffer: a variable size buffer to write the message to.
@@ -55,10 +55,10 @@ int recv_encrypted_message(std::vector<unsigned char>& buffer,
 
 /* 0) Calculate p, g, b, B
  * 1) Create socket. 
- * 2) Recieve client, send client p&g.
- * 3) Recieve A from the client.
+ * 2) Receive client, send client p&g.
+ * 3) Receive A from the client.
  *		3.1) Calculate DH_key
  *		3.2) Compute AES key (SLOW)
  * 4) Send B
- * 5) Recieve encrypted message.
+ * 5) Receive encrypted message.
  */

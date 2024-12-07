@@ -1,4 +1,5 @@
 //param parsing
+#include "logger.hpp"
 #include "read_args/read_args.hpp"
 
 //dh param selection
@@ -6,6 +7,7 @@
 #include "dh_param_gen/private.hpp"
 
 //socket
+#include "networking/internal/socket_util.hpp"
 
 //namespace stuff
 #include "dh_params.hpp"
@@ -16,17 +18,24 @@ int main(int argc, char* argv[]) {
 		return 1;
 
 	dh::DH_Params& params = dh::DH_Params::get();
+	dh::Logger& log = dh::Logger::get();
+	std::optional<std::string> logPath = params.get_path();
+	if (logPath)
+		log.initialize(logPath.value());
+
 	if (params.is_server()) {
 		//if server, pick p & g, generate a
 		auto[p, g] = dh::select_public_DH_params();			
 		cpp_int a  = dh::generate_a();
 		
 		//then open socket to listen for client
+		int socket = dh::create_socket();
+		dh::close_socket(socket);
 		
 	} 
 
 	else {
-		//if client, recieve p & g, generate a, send A
+		//if client, receive p & g, generate a, send A
 
 	}
 	

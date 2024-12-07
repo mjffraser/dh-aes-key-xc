@@ -33,11 +33,11 @@ int send_A(cpp_int& A);
 /*
  * recv_B
  *
- * Recieves g^b from the server. 
+ * Receives g^b from the server. 
  *
- * This function expects that the server just recieved A, 
+ * This function expects that the server just received A, 
  * and is calculating the AES key, which is slow. An extra
- * timeout delay is inserted while waiting to recieve B.
+ * timeout delay is inserted while waiting to receive B.
  *
  * Returns a negative value on failure.
  */
@@ -67,7 +67,7 @@ int send_encrypted_message(unsigned char* message,
  * 2) Get p&g. 
  *		2.1) Calculate a, A.
  * 3) Send A 
- * 4) Recieve B
+ * 4) Receive B
  *		4.1) Calculate DH_key
  *		4.2) Compute AES key (SLOW)
  * 5) Send encrypted message

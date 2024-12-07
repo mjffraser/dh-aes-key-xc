@@ -1,5 +1,7 @@
 #include "logger.hpp"
+#include <chrono>
 #include <iostream>
+#include <algorithm>
 
 namespace dh {
 
@@ -22,13 +24,21 @@ int Logger::initialize(const std::string& path) {
 		return 0;
 
 	buffer.fill('\x0');
-	log_file.open(path);
+	log_file.open(path, std::ios_base::app);
 	if (!log_file) {
 		std::cerr << "[WARN] Could not open the log file. No logging will take place." << std::endl;
 		return 1;
 	}
 
 	setup = true;
+
+	const auto now = std::chrono::system_clock::now();
+	const std::time_t t = std::chrono::system_clock::to_time_t(now);
+	std::string time_formatted = std::ctime(&t);
+	
+	//drops formatting done by ctime
+	time_formatted.erase(std::find(time_formatted.begin(), time_formatted.end(), '\n'), time_formatted.end());
+	this->append_to_log("[" + time_formatted + "]"); //timestamp for log
 	return 0;
 }
 

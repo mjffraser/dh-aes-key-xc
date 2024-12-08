@@ -5,6 +5,12 @@
 
 namespace dh::debug {
 
+void print_bytes_as_hex(cpp_int& val) {
+	std::ostringstream oss;
+	oss << std::hex << val;
+	std::cout << oss.str() << std::endl;
+}
+
 void print_bytes_as_hex(const std::string &bytes) {
 	std::stringstream ss;
 	ss << "0x";
@@ -23,6 +29,8 @@ void print_bytes_as_hex(unsigned char* bytes, int len) {
 	}
 	std::cout << ss.str() << std::endl;
 }
+
+
 
 }
 

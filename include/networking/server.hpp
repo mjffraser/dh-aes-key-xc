@@ -12,6 +12,15 @@ namespace dh {
 int create_server();
 
 /*
+ * server_teardown
+ *
+ * Cleans up the server socket. Shoudl be called either
+ * after finishing the communication, or after any error
+ * before exiting.
+ */
+void server_teardown(int server, int client = -1);
+
+/*
  * accept_client
  *
  * Returns the socket descriptor for an incoming client connection.
@@ -28,7 +37,9 @@ int accept_client();
  * - a negative result on failure, the client socket should be terminated in this case.
  * - the shared key as a cpp_int otherwise.
  */
-cpp_int establish_DH_key();
+cpp_int establish_DH_key(const std::string& p,
+												 const std::string& g,
+												 const std::string& B);
 
 /*
  * recv_encrypted_message
@@ -55,7 +66,7 @@ int recv_encrypted_message(std::vector<unsigned char>& buffer,
 
 /* 0) Calculate p, g, b, B
  * 1) Create socket. 
- * 2) Receive client, send client p&g.
+ * 2) Receive client, send client p||g||B.
  * 3) Receive A from the client.
  *		3.1) Calculate DH_key
  *		3.2) Compute AES key (SLOW)

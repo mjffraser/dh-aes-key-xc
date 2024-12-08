@@ -11,6 +11,15 @@ namespace dh {
  */
 int create_client();
 
+/* 
+ * client_teardown
+ *
+ * Cleans up the client socket. Should be called either
+ * after finishing the communication, or after any error
+ * before exiting.
+ */
+void client_teardown(int socket);
+
 /*
  * recv_dh_pub
  *

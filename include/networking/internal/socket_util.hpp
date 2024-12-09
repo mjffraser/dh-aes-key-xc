@@ -66,6 +66,6 @@ ssize_t send_message(int socket, const char* message, size_t len);
  *   message is in the buffer.
  * - a negative result on error.
  */
-ssize_t recv_message(int socket, std::vector<unsigned char>& buffer, int timeout);
+ssize_t recv_message(int socket, std::vector<char>& buffer, int timeout);
 
 }

@@ -28,7 +28,7 @@ set(AES_ENCRYPTION_SRC
 set(NETWORK_SRC
 	src/networking/server.cpp
 	src/networking/client.cpp
-	src/networking/message_formatting.cpp
+	src/networking/internal/message_formatting.cpp
 	src/networking/internal/socket_util.cpp
 )
 

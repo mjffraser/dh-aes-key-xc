@@ -63,19 +63,6 @@ private:
 	std::string  ip_addr      = "127.0.0.1";
 	unsigned int port         = 65000;
 	
-	//public dh fields
-	//these are decided by server, and must be received over socket by client
-	bool dh_public_set = false;
-	cpp_int _p;   
-	cpp_int _g;		
-	
-	//private dh fields
-	bool dh_private_set = false;
-	cpp_int _a;		
-	cpp_int _A;		
-	cpp_int _B;		
-	cpp_int _key; 
-
 	//function to guard against a parameters use if it wasn't initialized properly
 	template <typename Param>
 	static std::optional<Param> ret_okay(Param& field, bool set_flag) {
@@ -85,8 +72,19 @@ private:
 			return std::nullopt;
 	}
 
-
 public:
+	//public dh fields
+	//these are decided by server, and must be received over socket by client
+	cpp_int p;   
+	cpp_int g;		
+	
+	//private dh fields
+	cpp_int a;		
+	cpp_int A;		
+	cpp_int B;		
+	cpp_int dh_key; 
+
+
 	//GET INSTANCE HERE
 	static DH_Params& get() {
 		static DH_Params instance;
@@ -106,9 +104,6 @@ public:
 													std::optional<std::string> & ip, 
 													std::optional<unsigned int>& port_no);
 
-	void set_public_DH_fields(const cpp_int& p, const cpp_int& g);
-	void set_private_DH_fields(const cpp_int& a, const cpp_int& A, const cpp_int& B, const cpp_int& key);
-
 	bool												debug()             { return debug_flag;												 }
 	bool												is_server()         { return server;														 }
 	bool												use_vetted_primes() { return vetted_primes;											 }
@@ -116,12 +111,6 @@ public:
 	std::optional<unsigned int> get_bits()          { return ret_okay(bits,     network_set);    }
 	std::optional<std::string>  get_IP()            { return ret_okay(ip_addr,  network_set);    }
 	std::optional<unsigned int> get_port()          { return ret_okay(port,     network_set);		 }
-	std::optional<cpp_int>			p()                 { return ret_okay(_p,       dh_public_set);  }
-	std::optional<cpp_int>			g()                 { return ret_okay(_g,       dh_public_set);  }
-	std::optional<cpp_int>			a()                 { return ret_okay(_a,       dh_private_set); }
-	std::optional<cpp_int>			A()                 { return ret_okay(_A,       dh_private_set); }
-	std::optional<cpp_int>			B()                 { return ret_okay(_B,       dh_private_set); }
-	std::optional<cpp_int>			key()               { return ret_okay(_key,     dh_private_set); }
 
 };
 

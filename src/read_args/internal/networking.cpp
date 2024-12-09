@@ -15,6 +15,8 @@ bool validate_IP(const std::string& ip) {
 		return false;
 	}
 
+	std::cout << ip << std::endl;
+
 	bool result = std::regex_match(ip, ip_pattern);
 	if (!result)
 		std::cout << "[WARN] IP Address supplied doesn't appear to be valid IPv4 address. Using localhost." << std::endl;
@@ -58,7 +60,7 @@ int parse_networking_fields(int argc, char* argv[]) {
 		}
 
 		//ip
-		else if (arg == "--ip" || "-i") {
+		else if (arg == "--ip" || arg == "-i") {
 			if ((i+1) < argc) {
 				std::string addr(argv[i+1]);
 				if (validate_IP(addr))
@@ -73,15 +75,16 @@ int parse_networking_fields(int argc, char* argv[]) {
 				unsigned int port_no = (unsigned int) std::stoul(argv[i+1]);
 
 				if (port_no < 1024) {
-					std::cout << "[WARN] Supplied port number is probably in use by the system. A random high port will be selected." << std::endl;
+					std::cout << "[WARN] Supplied port number is probably in use by the system, using default of 65000." << std::endl;
 					std::cout << "Recommended port range: 49152-65535." << std::endl;
 				} else if (port_no > 65535) {
-					std::cout << "[WARN] Supplied port number is too high! A random high port will be selected." << std::endl;
+					std::cout << "[WARN] Supplied port number is too high! Using default of 65000." << std::endl;
 					std::cout << "Recommended port range: 49152-65535." << std::endl;
+				} else {
+					port = port_no;
 				}
 				
 				++i;
-				port = port_no;
 			}
 		}
 	}

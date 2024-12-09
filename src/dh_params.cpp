@@ -35,28 +35,4 @@ void DH_Params::set_network_fields(bool server_flag, std::optional<unsigned int>
 	network_set = true;
 }
 
-void DH_Params::set_public_DH_fields(const cpp_int& p, const cpp_int& g) {
-	//no changing values after they're set
-	if (dh_public_set)
-		return;
-
-	_p = p;
-	_g = g;
-
-	dh_public_set = true;
-}
-
-void DH_Params::set_private_DH_fields(const cpp_int& a, const cpp_int& A, const cpp_int& B, const cpp_int& key) {
-	//no changing values after they're set
-	if (dh_private_set)
-		return;
-
-	_a   = a;
-	_A   = A;
-	_B   = B;
-	_key = key;
-
-	dh_private_set = true;
-}
-
 }

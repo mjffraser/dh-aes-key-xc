@@ -14,7 +14,7 @@ int create_server();
 /*
  * server_teardown
  *
- * Cleans up the server socket. Shoudl be called either
+ * Cleans up the server socket. Should be called either
  * after finishing the communication, or after any error
  * before exiting.
  */
@@ -23,23 +23,47 @@ void server_teardown(int server, int client = -1);
 /*
  * accept_client
  *
- * Returns the socket descriptor for an incoming client connection.
+ * Returns 
+ * - socket descriptor for an incoming client connection.
+ * - a negative result on failure. Terminate server socket 
+ *   in this case.
  */
-int accept_client();
+int accept_client(int server);
 
 /* 
- * establish_DH_key
+ * send_p_g
  *
- * Engages in a series of messages with the client to establish
- * a shared key for the AES encryption.
+ * Sends p & g to the client. 
  *
  * Returns: 
- * - a negative result on failure, the client socket should be terminated in this case.
- * - the shared key as a cpp_int otherwise.
+ * - bytes sent (message len)
+ * - a negative result on failure, terminate both sockets
+ *   in this case.
  */
-cpp_int establish_DH_key(const std::string& p,
-												 const std::string& g,
-												 const std::string& B);
+int send_p_g(int client);
+
+/*
+ * recv_A
+ *
+ * Recieves A from client. 
+ *
+ * Returns:
+ * - the cpp_int A on success,
+ * - a negative result on failure, terminate both sockets
+ *   in this case.
+ */
+cpp_int recv_A(int client);
+
+/*
+ * send_B
+ *
+ * Sends B to client.
+ *
+ * Returns:
+ * - a negative result on failture, terminate both sockets
+ *   in this case.
+ */
+int send_B(int client);
 
 /*
  * recv_encrypted_message
@@ -53,23 +77,31 @@ cpp_int establish_DH_key(const std::string& p,
  *
  * Expects:
  * - buffer: a variable size buffer to write the message to.
- * - tag: a 16-byte container to store the tag for the encrypted message.
- * - iv: a 16-byte contaner to store the iv used for the encryption.
+ * - tag: the hex string representing the 16-byte tag. 
+ *		- should be 32 chars long.
+ * - iv: the hex string representing the 16-byte nonce.
+ *		- should be 32 chars long
  *
  * Returns a negative result on failure.
  */
-int recv_encrypted_message(std::vector<unsigned char>& buffer, 
-													 unsigned char* tag, 
-													 unsigned char* iv);
+int recv_encrypted_message(int client,
+													 std::vector<char>& buffer, 
+													 char* tag,
+													 char* iv);
 
 }
 
+//SERVER PROTOCOL
 /* 0) Calculate p, g, b, B
- * 1) Create socket. 
- * 2) Receive client, send client p||g||B.
- * 3) Receive A from the client.
- *		3.1) Calculate DH_key
- *		3.2) Compute AES key (SLOW)
- * 4) Send B
- * 5) Receive encrypted message.
+ * 1) Create socket.													> create_server() 
+ * 2) Receive client													> accept_client() 
+ * 3) Send client p||g.												> send_p_g()
+ * 4) Receive A from the client.							> recv_A()
+ *		4.1) Calculate DH_key 
+ *		4.2) Compute AES key (SLOW)
+ * 5) Send B																	> recv_B
+ * 6) Receive encrypted message.							> recv_encrypted_message
+ *		6.1) Set higher timeout on recv for msg
+ *				 since client needs time to compute 
+ *				 AES key.
  */

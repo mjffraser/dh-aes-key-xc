@@ -10,7 +10,6 @@
 //socket
 #include "networking/server.hpp"
 #include "networking/client.hpp"
-#include "networking/message_formatting.hpp"
 
 //namespace stuff
 #include "dh_params.hpp"
@@ -29,28 +28,34 @@ int main(int argc, char* argv[]) {
 	if (params.is_server()) {
 		//if server, pick p & g, pick private exponent, calculate A=g^a
 		auto[p, g] = dh::select_public_DH_params();			
-		cpp_int b  = dh::generate_a();
-		cpp_int B  = dh::generate_A(p, g, b);
-		std::string p_hex = dh::itoh(p);
-		std::string g_hex = dh::itoh(g);
-		std::string B_hex = dh::itoh(B);
+		cpp_int a  = dh::generate_a();
+		cpp_int A  = dh::generate_A(p, g, a);
+
+		params.p = p;
+		params.g = g;
+		params.a = a;
+		params.A = A;
 
 		//create socket
-		int socket = dh::create_server();
-		if (socket < 0) {
-			dh::server_teardown(socket);
+		int server = dh::create_server();
+		if (server < 0) {
+			dh::server_teardown(server);
 			return 1;
 		} 
 		
 		//accept client connection
-		int client = dh::accept_client();
+		int client = dh::accept_client(server);
 		if (client < 0) {
-			dh::server_teardown(socket, client);
+			dh::server_teardown(server, client);
 			return 1;
 		}
 
-		cpp_int key = dh::establish_DH_key(p_hex, g_hex, B_hex);
-		
+		if (dh::send_p_g(client) < 0) {
+			dh::server_teardown(server, client);
+			return 1;
+		}
+
+		dh::server_teardown(server, client);
 	} 
 
 	else {
@@ -61,15 +66,20 @@ int main(int argc, char* argv[]) {
 			return 1;
 		}
 
+		if (dh::connect_to_server(socket) != 0) {
+			dh::client_teardown(socket);
+			return 1;
+		}
+
 		//recieve p&g from server
 		cpp_int p, g;
-		if (dh::recv_dh_pub(p, g) < 0) {
+		if (dh::recv_dh_pub(socket, p, g) < 0) {
 			dh::client_teardown(socket);
 			return 1;
 		}
 
 
-
+		dh::client_teardown(socket);
 	}
 	
 	return 0;

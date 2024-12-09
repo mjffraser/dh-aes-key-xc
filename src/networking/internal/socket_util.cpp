@@ -121,7 +121,7 @@ int init_connection(int socket) {
 	}
 }
 
-ssize_t send_message(int socket, const unsigned char* message, size_t len) {
+ssize_t send_message(int socket, const char* message, size_t len) {
 	DH_Params& params = DH_Params::get();
 	Logger& log = Logger::get();
 	if (params.debug())
@@ -141,14 +141,14 @@ ssize_t send_message(int socket, const unsigned char* message, size_t len) {
 	return sent;
 }
 
-ssize_t recv_message(int socket, std::vector<unsigned char>& buffer, int timeout) {
+ssize_t recv_message(int socket, std::vector<char>& buffer, int timeout) {
 	DH_Params& params = DH_Params::get();
 	Logger& log = Logger::get();
 	if (params.debug())
 		log.append_to_log("[LOG] Receiving message...");
 
 	ssize_t total = 0;
-	std::vector<unsigned char> temp(1024);
+	std::vector<char> temp(1024);
 	struct timeval tv;
 	tv.tv_sec = timeout;
 	tv.tv_usec = 0;
@@ -177,6 +177,7 @@ ssize_t recv_message(int socket, std::vector<unsigned char>& buffer, int timeout
 		else {
 			if (params.debug())
 				log.append_to_log("[LOG] Received " + std::to_string(received) + " bytes.");
+			buffer.insert(buffer.end(), temp.begin(), temp.begin() + received);
 			continue;
 		}
 	}

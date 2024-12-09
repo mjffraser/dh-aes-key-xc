@@ -1,6 +1,4 @@
-#include "networking/message_formatting.hpp"
-#include <iterator>
-#include <sstream>
+#include "networking/internal/message_formatting.hpp"
 
 namespace dh {
 
@@ -19,14 +17,12 @@ std::string format_message(std::initializer_list<Message> strings) {
 	size_t limit = strings.size(), index = 0;
 	for (auto& [msg, len] : strings) {
 		std::string s(msg, msg+len);
-		std::cout << s << std::endl;
 		formatted.append(msg, msg+len);
 		if (index != limit-1) 
 			formatted += "||";
 
 		index++;
 	}
-	std::cout << formatted << std::endl;
 	return formatted;
 }
 

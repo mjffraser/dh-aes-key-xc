@@ -20,6 +20,16 @@ int create_client();
  */
 void client_teardown(int socket);
 
+/* connect_to_server
+ *
+ * Attempts to connect to the server at IP:Port
+ *
+ * Returns:
+ * - 0 on success,
+ * - a negative result on error.
+ */
+int connect_to_server(int socket); 
+
 /*
  * recv_dh_pub
  *
@@ -28,7 +38,7 @@ void client_teardown(int socket);
  *
  * Returns a negative value on failure.
  */
-int recv_dh_pub(cpp_int& p, cpp_int& g);
+int recv_dh_pub(int socket, cpp_int& p, cpp_int& g);
 
 /*
  * send_A
@@ -58,26 +68,33 @@ int recv_B(cpp_int& B);
  * Sends the AES encrypted message to the server.
  *
  * Expects:
- * - message: the encrypted data, as bytes.
- * - messsage_len: the number of bytes in message.
- * - tag: the 16-byte tag for authentication on the other side.
- * - iv: the 16-byte iv used for encryption. 
+ * - message: the encrypted data, as a hex string
+ * - messsage_len
+ * - tag: a hex string representing the 16-byte tag.
+ *		- should be 32 chars long
+ * - iv: a hex string representing the 16-byte nonce.
+ *		- should be 32 chars long
  *
  * Returns a negative value on failure.
  */
-int send_encrypted_message(unsigned char* message, 
+int send_encrypted_message(char* message, 
 													 int message_len, 
-													 unsigned char* tag, 
-													 unsigned char* iv);
+													 char* tag, 
+													 char* iv);
 
 }
 
+//CLIENT PROTOCOL
 /* 1) Create socket.
- * 2) Get p&g. 
- *		2.1) Calculate a, A.
- * 3) Send A 
- * 4) Receive B
- *		4.1) Calculate DH_key
- *		4.2) Compute AES key (SLOW)
- * 5) Send encrypted message
+ * 2) Connect to the server
+ * 3) Get p||g. 
+ *		3.1) Calculate a, A.
+ * 4) Send A 
+ * 5) Receive B
+ *		5.1) Set higher timeout on recv for B
+ *				 since server needs time to compute
+ *				 AES key.
+ *		5.2) Calculate DH_key
+ *		5.3) Compute AES key (SLOW)
+ * 6) Send encrypted message
  */

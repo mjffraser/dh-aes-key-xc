@@ -9,7 +9,7 @@ namespace dh {
  *
  * Creates client socket and returns the socket descriptor
  */
-int create_client();
+int create_client(Params& params);
 
 /* 
  * client_teardown
@@ -28,17 +28,20 @@ void client_teardown(int socket);
  * - 0 on success,
  * - a negative result on error.
  */
-int connect_to_server(int socket); 
+int connect_to_server(int socket, Params& params);
 
 /*
  * recv_dh_pub
  *
  * Contacts the server and gets the public p&g values
- * used for the key establishment.
+ * used for the key establishment. Puts the recieved
+ * p&g into the references passed as args.
  *
  * Returns a negative value on failure.
  */
-int recv_dh_pub(int socket, cpp_int& p, cpp_int& g);
+int recv_dh_pub(int socket,
+								cpp_int& p, 
+								cpp_int& g);
 
 /*
  * send_A
@@ -81,20 +84,6 @@ int send_encrypted_message(char* message,
 													 int message_len, 
 													 char* tag, 
 													 char* iv);
-
 }
 
-//CLIENT PROTOCOL
-/* 1) Create socket.
- * 2) Connect to the server
- * 3) Get p||g. 
- *		3.1) Calculate a, A.
- * 4) Send A 
- * 5) Receive B
- *		5.1) Set higher timeout on recv for B
- *				 since server needs time to compute
- *				 AES key.
- *		5.2) Calculate DH_key
- *		5.3) Compute AES key (SLOW)
- * 6) Send encrypted message
- */
+

@@ -3,7 +3,6 @@
 #include <boost/multiprecision/cpp_int.hpp>
 #include <boost/multiprecision/number.hpp>
 
-#include <optional>
 #include <string>
 
 
@@ -12,8 +11,9 @@ using namespace boost::multiprecision;
 namespace dh {
 
 /* 
- * DH_Params:
- * Class object that houses values needed for DH communication over sockets.
+ * Params:
+ * Object that houses values needed for DH communication over sockets, as well
+ * as the AES key used to encrypt messages.
  *
  * General:
  * -> debug_flag (default FALSE)
@@ -44,74 +44,30 @@ namespace dh {
  *		Secret key to encrypt messages with. Derived from B^a mod p. Should not be disclosed.
  */
 
-class DH_Params {
-private:
-	//enforce single instance
-	DH_Params()	 {}
-	~DH_Params() {}
+struct Params {
+	//general fields
+	bool				 debug         = false;
+	bool				 vetted_primes = false;
+	std::string  log_path      = "log";
 
-	//general
-	bool				general_set   = false;
-	bool				debug_flag    = false;
-	bool				vetted_primes = true;
-	std::string log_path      = "log";
+	//network specific
+	bool				 server        = false;
+	unsigned int bits          = 2048;
+	std::string  ip_addr       = "127.0.0.1";
+	unsigned int port          = 65000;
 
-	//networking fields
-	bool				 network_set  = false;
-	bool				 server       = false;
-	unsigned int bits         = 2048;
-	std::string  ip_addr      = "127.0.0.1";
-	unsigned int port         = 65000;
-	
-	//function to guard against a parameters use if it wasn't initialized properly
-	template <typename Param>
-	static std::optional<Param> ret_okay(Param& field, bool set_flag) {
-		if (set_flag == true)
-			return field;
-		else 
-			return std::nullopt;
-	}
+	//the public dh prime and prim root
+	cpp_int p = -1;
+	cpp_int g = -1;
 
-public:
-	//public dh fields
-	//these are decided by server, and must be received over socket by client
-	cpp_int p;   
-	cpp_int g;		
-	
-	//private dh fields
-	cpp_int a;		
-	cpp_int A;		
-	cpp_int B;		
-	cpp_int dh_key; 
+	//other values used for dh
+	cpp_int a = -1;
+	cpp_int A = -1;
+	cpp_int B = -1;
+	cpp_int dh_key = -1; 
 
-
-	//GET INSTANCE HERE
-	static DH_Params& get() {
-		static DH_Params instance;
-		return instance;
-	}
-	
-	//COPY & MOVE
-	DH_Params(DH_Params const&)			 = delete;
-	void operator=(DH_Params const&) = delete;
-
-	void set_general_fields(std::optional<std::string>&	 path, 
-													std::optional<bool>&				 db, 
-													std::optional<bool>&				 vp);
-
-	void set_network_fields(bool												 server_flag, 
-													std::optional<unsigned int>& bit_amount, 
-													std::optional<std::string> & ip, 
-													std::optional<unsigned int>& port_no);
-
-	bool												debug()             { return debug_flag;												 }
-	bool												is_server()         { return server;														 }
-	bool												use_vetted_primes() { return vetted_primes;											 }
-	std::optional<std::string>  get_path()          { return ret_okay(log_path, general_set);    }
-	std::optional<unsigned int> get_bits()          { return ret_okay(bits,     network_set);    }
-	std::optional<std::string>  get_IP()            { return ret_okay(ip_addr,  network_set);    }
-	std::optional<unsigned int> get_port()          { return ret_okay(port,     network_set);		 }
-
+	//the derived aes key
+	std::string aes_key;
 };
 
 }

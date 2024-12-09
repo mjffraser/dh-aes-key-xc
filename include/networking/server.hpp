@@ -9,7 +9,7 @@ namespace dh {
  *
  * Creates server socket and returns the socket descriptor
  */
-int create_server();
+int create_server(Params& params);
 
 /*
  * server_teardown
@@ -28,7 +28,7 @@ void server_teardown(int server, int client = -1);
  * - a negative result on failure. Terminate server socket 
  *   in this case.
  */
-int accept_client(int server);
+int accept_client(int server, Params& params);
 
 /* 
  * send_p_g
@@ -40,7 +40,7 @@ int accept_client(int server);
  * - a negative result on failure, terminate both sockets
  *   in this case.
  */
-int send_p_g(int client);
+int send_p_g(int client, Params& params);
 
 /*
  * recv_A
@@ -89,19 +89,5 @@ int recv_encrypted_message(int client,
 													 char* tag,
 													 char* iv);
 
-}
 
-//SERVER PROTOCOL
-/* 0) Calculate p, g, b, B
- * 1) Create socket.													> create_server() 
- * 2) Receive client													> accept_client() 
- * 3) Send client p||g.												> send_p_g()
- * 4) Receive A from the client.							> recv_A()
- *		4.1) Calculate DH_key 
- *		4.2) Compute AES key (SLOW)
- * 5) Send B																	> recv_B
- * 6) Receive encrypted message.							> recv_encrypted_message
- *		6.1) Set higher timeout on recv for msg
- *				 since client needs time to compute 
- *				 AES key.
- */
+}

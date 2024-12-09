@@ -5,8 +5,8 @@
 
 namespace dh {
 
-int create_server() {
-	return create_socket();
+int create_server(Params& params) {
+	return create_socket(params);
 }
 
 void server_teardown(int server, int client) {
@@ -15,20 +15,18 @@ void server_teardown(int server, int client) {
 	close_socket(server);
 }
 
-int accept_client(int server) {
-	return init_connection(server);
+int accept_client(int server, Params& params) {
+	return init_connection(server, params);
 }
 
-int send_p_g(int client) {
-	DH_Params& params = DH_Params::get();
-
+int send_p_g(int client, Params& params) {
 	std::string p_hex = itoh(params.p);
 	std::string g_hex = itoh(params.g);
 
 	std::string message = format_message({
-																				std::make_pair(p_hex.data(), p_hex.length()),
-																				std::make_pair(g_hex.data(), g_hex.length())
-																			});
+		std::make_pair(p_hex.data(), p_hex.length()),
+		std::make_pair(g_hex.data(), g_hex.length())
+	});
 	return send_message(client, message.c_str(), message.length());
 }
 

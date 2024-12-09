@@ -1,4 +1,5 @@
 #include "dh_params.hpp"
+#include <optional>
 #include <regex>
 #include <string>
 #include <unordered_set>
@@ -23,12 +24,9 @@ bool validate_IP(const std::string& ip) {
 	return result;
 }
 
-int parse_networking_fields(int argc, char* argv[]) {
+int parse_networking_fields(int argc, char* argv[], Params& params) {
 	//note that set_network_fields wants a bool value. server_flag being std::optional is to check it's actually set
-	std::optional<bool>					server_flag = std::nullopt;
-	std::optional<unsigned int> bits        = std::nullopt;
-	std::optional<std::string>	ip          = std::nullopt;
-	std::optional<unsigned int> port        = std::nullopt;
+	std::optional<bool>	server_flag = std::nullopt;
 
 	for (int i = 1; i < argc; ++i) {
 		std::string arg(argv[i]);
@@ -41,14 +39,15 @@ int parse_networking_fields(int argc, char* argv[]) {
 		} 
 
 		//bits
-		else if (arg == "--pBits" || arg == "-b") {
+		else if (arg == "--bits" || arg == "-b") {
 			if ((i+1) < argc) {
 				unsigned int bits_val = (unsigned int) std::stoul(argv[i+1]);
+				std::cout << bits_val << std::endl;
 				
 				//supporting 1536, 2048 (DEFAULT), 3072, 4096, 6144, 8192
 				std::unordered_set<unsigned int> valid_bits = {1536, 2048, 3072, 4096, 6144, 8192};
         if (valid_bits.count(bits_val)) {
-					bits = bits_val;
+					params.bits = bits_val;
         } else {
 					std::cout << "[WARN] Supplied bit amount for prime p is not one of {1536, 2048, 3072, 4096, 6144, 8192}." << std::endl;
           std::cout << "Supplied bit value: " << bits_val << std::endl;
@@ -64,7 +63,7 @@ int parse_networking_fields(int argc, char* argv[]) {
 			if ((i+1) < argc) {
 				std::string addr(argv[i+1]);
 				if (validate_IP(addr))
-					ip = addr;
+					params.ip_addr = addr;
 				++i;
 			}
 		}
@@ -81,7 +80,7 @@ int parse_networking_fields(int argc, char* argv[]) {
 					std::cout << "[WARN] Supplied port number is too high! Using default of 65000." << std::endl;
 					std::cout << "Recommended port range: 49152-65535." << std::endl;
 				} else {
-					port = port_no;
+					params.port = port_no;
 				}
 				
 				++i;
@@ -94,10 +93,10 @@ int parse_networking_fields(int argc, char* argv[]) {
 		std::cerr << "[ERR] Specified as neither client nor server. What am I?" << std::endl;
 		std::cerr << "USAGE: -c or --client for client, -s or --server for server." << std::endl;
 		return 1;
+	} else {
+		params.server = server_flag.value();
 	}
 
-	DH_Params& config = DH_Params::get();
-	config.set_network_fields(server_flag.value(), bits, ip, port);
 	return 0;
 }
 

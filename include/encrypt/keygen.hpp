@@ -14,6 +14,6 @@ namespace dh {
  * returns the pair of raw bytes in std::string's in the form:
  * <KEY, IV>
  */
-std::pair<std::string, std::string> aes_keygen(cpp_int& dh_shared_key);
+std::pair<std::string, std::string> aes_keygen(cpp_int& dh_shared_key, Params& params);
 
 }

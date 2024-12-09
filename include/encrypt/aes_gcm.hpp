@@ -1,5 +1,7 @@
 #pragma once
 
+#include "dh_params.hpp"
+
 namespace dh {
 
 /*
@@ -17,7 +19,8 @@ int encrypt(unsigned char* plaintext,
 						unsigned char* key,
 						unsigned char* iv,
 						unsigned char* ciphertext,
-						unsigned char* tag);
+						unsigned char* tag,
+						Params&				 params);
 
 /*
  * decrypt
@@ -37,7 +40,8 @@ int decrypt(unsigned char* ciphertext,
 						unsigned char* tag,
 						unsigned char* key,
 						unsigned char* iv,
-						unsigned char* plaintext);
+						unsigned char* plaintext,
+						Params&				 params);
 	
 
 }

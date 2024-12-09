@@ -39,9 +39,7 @@ set(ALL_SRC
 	${NETWORK_SRC}
 	src/rand/random_util.cpp
 	src/main.cpp
-	src/dh_params.cpp
 	src/logger.cpp
-	src/debug.cpp
 )
 
 add_executable(dh-key-xc ${ALL_SRC})

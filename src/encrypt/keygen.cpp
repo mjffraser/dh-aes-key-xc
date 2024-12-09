@@ -1,7 +1,6 @@
 #include "encrypt/keygen.hpp"
 #include "dh_params.hpp"
 #include "logger.hpp"
-#include "rand/random_util.hpp"
 
 #include <cstdlib>
 #include <error.h>
@@ -16,8 +15,7 @@ namespace dh {
 
 
 //https://docs.openssl.org/3.4/man7/EVP_KDF-SCRYPT/#examples
-std::pair<std::string, std::string> aes_keygen(cpp_int& dh_shared_key) {
-	DH_Params&		dh_params			= DH_Params::get();
+std::pair<std::string, std::string> aes_keygen(cpp_int& dh_shared_key, Params& dh_params) {
 	Logger&				log						= Logger::get();
 	EVP_KDF*			kdf;
 	EVP_KDF_CTX*	kctx;
@@ -34,7 +32,6 @@ std::pair<std::string, std::string> aes_keygen(cpp_int& dh_shared_key) {
 	std::stringstream ss; ss << std::hex << dh_shared_key;
 	pw = ss.str();
 
-
 	//salt
 	std::string salt_hex = "AES-keygen-salt";
 
@@ -50,8 +47,7 @@ std::pair<std::string, std::string> aes_keygen(cpp_int& dh_shared_key) {
 	*p++ = OSSL_PARAM_construct_uint32       (OSSL_KDF_PARAM_SCRYPT_P, &scrypt_P);
 	*p = OSSL_PARAM_construct_end();
 	if (EVP_KDF_derive(kctx, out, sizeof(out), params) <= 0) {
-		if (dh_params.debug())
-			log.append_to_log("[ERR] Cannot perform scrypt.");
+		log.append_to_log("[ERR] Cannot perform scrypt.");
 		exit(1); 
 	}
 

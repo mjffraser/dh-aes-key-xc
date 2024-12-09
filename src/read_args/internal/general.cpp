@@ -34,40 +34,33 @@ bool validate_log_path(const std::string& path) {
 	return result;
 }
 
-void parse_general_fields(int argc, char* argv[]) {
-	std::optional<bool>					debug             = std::nullopt;
-	std::optional<bool>					use_vetted_primes = std::nullopt;
-	std::optional<std::string>	log_path          = std::nullopt;
-
+void parse_general_fields(int argc, char* argv[], Params& params) {
 	for (int i = 1; i < argc; ++i) {
 		std::string arg(argv[i]);
 		
 		//debug flag (DEFAULT - FALSE)
 		if (arg == "--debug" || arg == "-d") {
-			debug = true;
+			params.debug = true;	
 		} 
 	
 		//vetted primes flag (DEFAULT - TRUE (use vetted primes))
 		else if (arg == "--generatePrimes")  {
-			use_vetted_primes = false;
+			params.vetted_primes = false;
 		} 
 
 		//log path (should be followed by path so: --log /home/.../log.txt)
 		//relative paths are also allowed (so: --log log.txt)
-		else if (arg == "--logPath" || arg == "-l") {
+		else if (arg == "--log" || arg == "-l") {
 			if ((i+1) < argc) {
 				std::string path(argv[i+1]);
 				if (validate_log_path(path)) 
-					log_path = path;
+					params.log_path = path;
 				++i; //extra increment to jump over path
 			} else {
 				std::cout << "[WARN] No log path supplied. USAGE: --logPath [path]" << std::endl;
 			}
 		}
 	}
-
-	DH_Params& config = DH_Params::get();	
-	config.set_general_fields(log_path, debug, use_vetted_primes);
 }	
 
 }

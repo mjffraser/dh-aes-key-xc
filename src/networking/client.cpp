@@ -6,20 +6,19 @@
 
 namespace dh {
 
-int create_client() {
-	return create_socket();
+int create_client(Params& params) {
+	return create_socket(params);
 }
 
 void client_teardown(int socket) {
 	close_socket(socket);
 }
 
-int connect_to_server(int socket) {
-	return init_connection(socket);
+int connect_to_server(int socket, Params& params) {
+	return init_connection(socket, params);
 }
 
 int recv_dh_pub(int socket, cpp_int& p, cpp_int& g) {
-	DH_Params& params = DH_Params::get();
 	Logger& log = Logger::get();
 	std::vector<char> buffer;
 	ssize_t res = recv_message(socket, buffer, 1);
@@ -31,8 +30,7 @@ int recv_dh_pub(int socket, cpp_int& p, cpp_int& g) {
 	std::vector<std::string> messages = parse_message(formatted_message);
 	
 	if (messages.size() != 2) {
-		if (params.debug())
-			log.append_to_log("[ERR] Message recieved does not appear to be p||g");
+		log.append_to_log("[ERR] Message recieved does not appear to be p||g");
 		return -1;
 	}
 

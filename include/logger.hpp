@@ -10,6 +10,7 @@ namespace dh {
 class Logger {
 private:
 	bool setup = false;
+	bool debug = false;
 
 	//Should be suffienciently large as to handle even the largest logging and error messages
 	static const uint16_t BUFFER_SIZE = 4096;
@@ -45,7 +46,7 @@ public:
 	 *
 	 * returns -> 0 on success, 1 on error.
 	 */
-	int initialize(const std::string& path);
+	int initialize(const std::string& path, bool debug);
 
 	/*
 	 * appendToLog:

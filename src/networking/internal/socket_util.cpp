@@ -20,24 +20,20 @@ namespace dh {
  * - true if serverAddr can be accessed from addr
  * - false otherwise
  */
-static bool get_server_address(DH_Params& params, Logger& log, sockaddr_in*& addr) {
+static bool get_server_address(Params& params, Logger& log, sockaddr_in*& addr) {
 	static bool init;
 	static sockaddr_in serverAddr;
 
 	if (!init) {
-		//load param values & check initialization has occured
-		std::optional<std::string>  ip   = params.get_IP();
-		std::optional<unsigned int> port = params.get_port();
-		if (!ip or !port) {
-			//this shouldn't ever happen, but just in case
-			if (params.debug())
-				log.append_to_log("[ERR] Network values have not been initialized!");
-			return false;
-		}
+		//load param values
+		//these have been validated during the import process
+		//default vals are used if any issue occured
+		std::string  ip   = params.ip_addr;
+		unsigned int port = params.port;
 		
 		serverAddr.sin_family = AF_INET;
-		serverAddr.sin_port = htons(port.value());
-		serverAddr.sin_addr.s_addr = inet_addr(ip.value().c_str());
+		serverAddr.sin_port = htons(port);
+		serverAddr.sin_addr.s_addr = inet_addr(ip.c_str());
 		init = true;
 	}
 
@@ -45,23 +41,20 @@ static bool get_server_address(DH_Params& params, Logger& log, sockaddr_in*& add
 	return true;
 }
 
-int create_socket() {
-	DH_Params& params = DH_Params::get();
+int create_socket(Params& params) {
 	Logger&	log	= Logger::get();
 
-	if (params.debug())
-		log.append_to_log("[LOG] Creating socket.");
+	log.append_to_log("[LOG] Creating socket.");
 
 	//create socket
 	int sock = socket(AF_INET, SOCK_STREAM, 0);
 
-	if (params.is_server()) {
+	if (params.server) {
 		sockaddr_in* serverAddr;
 		if (get_server_address(params, log, serverAddr)) {
 			int res = bind(sock, (sockaddr*)serverAddr, sizeof(*serverAddr));
 			if (res < 0) {
-				if (params.debug())
-					log.append_to_log("[ERR] Could not bind socket.");
+				log.append_to_log("[ERR] Could not bind socket.");
 				return -1;
 			}
 		} else {
@@ -73,27 +66,21 @@ int create_socket() {
 }
 
 void close_socket(int socket) {
-	DH_Params& params = DH_Params::get();
 	Logger&	log	= Logger::get();
-
-	if (params.debug())
-		log.append_to_log("[LOG] Closing socket.");
+	log.append_to_log("[LOG] Closing socket.");
 	close(socket);
 }
 
-int init_connection(int socket) {
-	DH_Params& params = DH_Params::get();
+int init_connection(int socket, Params& params) {
 	Logger& log = Logger::get();
 
 	//server
-	if (params.is_server()) {
+	if (params.server) {
 		listen(socket, 1); //will actually be 16, as Linux enforces a min backlog
-		if (params.debug())
-			log.append_to_log("[LOG] Listening for client.");
+		log.append_to_log("[LOG] Listening for client.");
 
 		int client_socket = accept(socket, nullptr, nullptr);
-		if (params.debug())
-			log.append_to_log("[LOG] Found client.");
+		log.append_to_log("[LOG] Found client.");
 
 		return client_socket; //will be negative on err
 	} 
@@ -102,17 +89,14 @@ int init_connection(int socket) {
 	else {
 		sockaddr_in* serverAddr;
 		if (get_server_address(params, log, serverAddr)) {
-			if (params.debug())
-				log.append_to_log("[LOG] Attempting to connect to server.");
+			log.append_to_log("[LOG] Attempting to connect to server.");
 
 			int res = connect(socket, (sockaddr*)serverAddr, sizeof(*serverAddr));
 			if (res < 0) {
-				if (params.debug())
-					log.append_to_log("[ERR] Could not connect to server.");
+				log.append_to_log("[ERR] Could not connect to server.");
 				return -1;
 			} else {
-				if (params.debug())
-					log.append_to_log("[LOG] Connected to server.");
+				log.append_to_log("[LOG] Connected to server.");
 				return res; //will be 0 on sucess
 			}
 		} else {
@@ -122,30 +106,24 @@ int init_connection(int socket) {
 }
 
 ssize_t send_message(int socket, const char* message, size_t len) {
-	DH_Params& params = DH_Params::get();
 	Logger& log = Logger::get();
-	if (params.debug())
-		log.append_to_log("[LOG] Sending message...");
+	log.append_to_log("[LOG] Sending message...");
 
 	ssize_t sent;
 	sent = send(socket, message, len, MSG_NOSIGNAL);
 	if (sent != len || sent < 0) {
-		if (params.debug())	
-			log.append_to_log("[ERR] Could not send message.");
+		log.append_to_log("[ERR] Could not send message.");
 		return -1;
 	}
 
-	if (params.debug()) 
-		log.append_to_log("[LOG] Sent " + std::to_string(sent) + " bytes.");
+	log.append_to_log("[LOG] Sent " + std::to_string(sent) + " bytes.");
 
 	return sent;
 }
 
 ssize_t recv_message(int socket, std::vector<char>& buffer, int timeout) {
-	DH_Params& params = DH_Params::get();
 	Logger& log = Logger::get();
-	if (params.debug())
-		log.append_to_log("[LOG] Receiving message...");
+	log.append_to_log("[LOG] Receiving message...");
 
 	ssize_t total = 0;
 	std::vector<char> temp(1024);
@@ -153,8 +131,7 @@ ssize_t recv_message(int socket, std::vector<char>& buffer, int timeout) {
 	tv.tv_sec = timeout;
 	tv.tv_usec = 0;
 	if (setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof(tv)) < 0) 
-		if (params.debug())
-			log.append_to_log("[WARN] Could not set recv timeout. This could cause unstable transmission, or failure altogether later on.");
+		log.append_to_log("[WARN] Could not set recv timeout. This could cause unstable transmission, or failure altogether later on.");
 	
 
 	ssize_t received = 1;
@@ -163,20 +140,17 @@ ssize_t recv_message(int socket, std::vector<char>& buffer, int timeout) {
 		total += received;
 
 		if (received < 0) {
-			if (params.debug())
-				log.append_to_log("[ERR] An error occured while receiving a message.");
+			log.append_to_log("[ERR] An error occured while receiving a message.");
 			return -1;
 		}
 
 		else if (received == 0) {
-			if (params.debug())
-				log.append_to_log("[LOG] End of message.");
+			log.append_to_log("[LOG] End of message.");
 			return total;
 		}
 
 		else {
-			if (params.debug())
-				log.append_to_log("[LOG] Received " + std::to_string(received) + " bytes.");
+			log.append_to_log("[LOG] Received " + std::to_string(received) + " bytes.");
 			buffer.insert(buffer.end(), temp.begin(), temp.begin() + received);
 			continue;
 		}

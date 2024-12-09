@@ -1,5 +1,7 @@
 #pragma once
 
+#include "dh_params.hpp"
+
 namespace dh {
 
 /*
@@ -8,10 +10,10 @@ namespace dh {
  * Goes through the command line args and picks 
  * out any of the general fields recognized.
  * 
- * Then grabs DHParams instance and sets the fields.
+ * Sets the relevant fields in params. 
  *
  * On any error defaults are used.
  */
-void parse_general_fields(int argc, char* argv[]);
+void parse_general_fields(int argc, char* argv[], Params& params);
 
 }

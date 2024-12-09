@@ -4,6 +4,8 @@
 #include <sys/types.h>
 #include <vector>
 
+#include "dh_params.hpp"
+
 namespace dh {
 
 /*
@@ -12,7 +14,7 @@ namespace dh {
  * Returns a socket. If it's a socket for a server, also binds it to
  * the supplied port number. IPv4 only.
  */
-int create_socket();
+int create_socket(Params& params);
 
 /*
  * close_socket
@@ -41,7 +43,7 @@ void close_socket(int socket);
  *
  * A negative result is returned on error for either process.
  */
-int init_connection(int socket);
+int init_connection(int socket, Params& params);
 
 /*
  * send_message
@@ -50,7 +52,9 @@ int init_connection(int socket);
  *
  * Returns bytes sent (len) on success, and a negative result on error.
  */
-ssize_t send_message(int socket, const char* message, size_t len);
+ssize_t send_message(int socket,
+										 const char* message,
+										 size_t len);
 
 /*
  * recv_message
@@ -66,6 +70,8 @@ ssize_t send_message(int socket, const char* message, size_t len);
  *   message is in the buffer.
  * - a negative result on error.
  */
-ssize_t recv_message(int socket, std::vector<char>& buffer, int timeout);
+ssize_t recv_message(int socket, 
+										 std::vector<char>& buffer, 
+										 int timeout);
 
 }

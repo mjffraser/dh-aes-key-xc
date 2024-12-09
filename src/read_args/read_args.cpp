@@ -4,9 +4,9 @@
 
 namespace dh {
 
-int parse_args(int argc, char* argv[]) {
-	parse_general_fields(argc, argv);
-	int result = parse_networking_fields(argc, argv);
+int parse_args(int argc, char* argv[], Params& params) {
+	parse_general_fields(argc, argv, params);
+	int result = parse_networking_fields(argc, argv, params);
 	return result;
 }
 

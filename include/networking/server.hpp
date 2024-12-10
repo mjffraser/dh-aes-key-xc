@@ -45,25 +45,25 @@ int send_p_g(int client, Params& params);
 /*
  * recv_A
  *
- * Recieves A from client. 
+ * Recieves B from client. 
  *
  * Returns:
- * - the cpp_int A on success,
+ * - the cpp_int B on success,
  * - a negative result on failure, terminate both sockets
  *   in this case.
  */
-cpp_int recv_A(int client);
+int recv_client_B(int client, Params& params);
 
 /*
- * send_B
+ * send_A
  *
- * Sends B to client.
+ * Sends A to client.
  *
  * Returns:
  * - a negative result on failture, terminate both sockets
  *   in this case.
  */
-int send_B(int client);
+int send_client_A(int client, Params& params);
 
 /*
  * recv_encrypted_message

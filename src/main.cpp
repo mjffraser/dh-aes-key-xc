@@ -1,4 +1,5 @@
 //param parsing
+#include "encrypt/keygen.hpp"
 #include "logger.hpp"
 #include "networking/server.hpp"
 #include "read_args/read_args.hpp"
@@ -14,6 +15,10 @@
 //namespace stuff
 #include "dh_params.hpp"
 
+
+
+namespace dh {
+
 /* 
  * server protocol
  *
@@ -22,18 +27,15 @@
  * 2) Create socket.
  * 3) Receive client.
  * 4) Send client p||g.
- * 5) Receive A from the client.
+ * 5) Receive B from the client.
  *		5.1) Calculate DH_key 
  *		5.2) Compute AES key (SLOW)
- * 6) Send B
+ * 6) Send A
  * 7) Receive encrypted message.
  *		7.1) Set higher timeout on recv for msg
  *				 since client needs time to compute 
  *				 AES key.
  */
-
-namespace dh {
-
 int server(Params& params) {
 	/* 1) Calculate p, g, b, B */
 	auto[p, g] = select_public_DH_params(params);			
@@ -52,26 +54,47 @@ int server(Params& params) {
 		return 1;
 	params.A = A;
 
-	/* 1) Create socket. */
+	/* 2) Create socket. */
 	int server = create_server(params);
 	if (server < 0) {
 		server_teardown(server);
 		return 1;
 	}
 
-	/* 2) Receive client. */
+	/* 3) Receive client. */
 	int client = accept_client(server, params);
 	if (client < 0) {
 		server_teardown(server, client);
 		return 1;
 	}
 
-	/* 3) Send client p||g. */	
+	/* 4) Send client p||g. */	
 	if (send_p_g(client, params) < 0) {
 		server_teardown(server, client);
 		return 1;
 	}
 
+	/* 5) Receive A from the client. */
+	if (recv_client_B(client, params) < 0) {
+		server_teardown(server, client);
+		return 1;
+	}
+
+	/* 5.1) Calculate DH key */
+	if ((params.dh_key = generate_key(params)) < 0) {
+		server_teardown(server, client);
+		return 1;
+	}
+
+	auto [key, iv] = aes_keygen(params.dh_key, params);
+
+	/* 6) Send B */
+	if (send_client_A(client, params) < 0) {
+		server_teardown(server, client);
+		return 1;
+	}
+
+	std::cout << key << std::endl;
 
 	server_teardown(server, client);
 	return 0;
@@ -110,12 +133,46 @@ int client(Params& params) {
 
 	/* 3) Get p||g. */
 	cpp_int p, g;
-	if (recv_dh_pub(client, p, g) < 0) {
+	if (recv_dh_pub(client, params) < 0) {
 		client_teardown(client);
 		return 1;
 	}
-	params.p = p;
-	params.g = g;
+
+	//a
+	if ((params.a = generate_a(params)) < 0) {
+		client_teardown(client);
+		return 1;
+	}
+
+	//A
+	if ((params.A = generate_A(params)) < 0) {
+		client_teardown(client);
+		return 1;
+	}
+
+	/* 4) Send A */
+	if (send_server_A(client, params) < 0) {
+		client_teardown(client);
+		return 1;
+	}
+
+	/* 5) Recieve B */
+	if (recv_server_B(client, params) < 0) {
+		client_teardown(client);
+		return 1;
+	}
+
+	//dh key
+	if ((params.dh_key = generate_key(params)) < 0) {
+		client_teardown(client);
+		return 1;
+	}	
+
+	auto [key, iv] = aes_keygen(params.dh_key, params);
+	std::cout << key << std::endl;
+
+
+
 
 	client_teardown(client);
 	return 0;

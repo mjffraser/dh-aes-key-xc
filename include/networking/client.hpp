@@ -34,14 +34,11 @@ int connect_to_server(int socket, Params& params);
  * recv_dh_pub
  *
  * Contacts the server and gets the public p&g values
- * used for the key establishment. Puts the recieved
- * p&g into the references passed as args.
+ * used for the key establishment.
  *
  * Returns a negative value on failure.
  */
-int recv_dh_pub(int socket,
-								cpp_int& p, 
-								cpp_int& g);
+int recv_dh_pub(int socket, Params& params);
 
 /*
  * send_A
@@ -50,7 +47,7 @@ int recv_dh_pub(int socket,
  *
  * Returns a negative value on failure.
  */
-int send_A(cpp_int& A);
+int send_server_A(int client, Params& params);
 
 /*
  * recv_B
@@ -63,7 +60,7 @@ int send_A(cpp_int& A);
  *
  * Returns a negative value on failure.
  */
-int recv_B(cpp_int& B);
+int recv_server_B(int client, Params& params);
 
 /*
  * send_encrypted_message
@@ -80,7 +77,8 @@ int recv_B(cpp_int& B);
  *
  * Returns a negative value on failure.
  */
-int send_encrypted_message(char* message, 
+int send_encrypted_message(Params& params,
+													 char* message, 
 													 int message_len, 
 													 char* tag, 
 													 char* iv);

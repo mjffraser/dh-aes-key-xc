@@ -16,8 +16,6 @@ bool validate_IP(const std::string& ip) {
 		return false;
 	}
 
-	std::cout << ip << std::endl;
-
 	bool result = std::regex_match(ip, ip_pattern);
 	if (!result)
 		std::cout << "[WARN] IP Address supplied doesn't appear to be valid IPv4 address. Using localhost." << std::endl;
@@ -42,7 +40,6 @@ int parse_networking_fields(int argc, char* argv[], Params& params) {
 		else if (arg == "--bits" || arg == "-b") {
 			if ((i+1) < argc) {
 				unsigned int bits_val = (unsigned int) std::stoul(argv[i+1]);
-				std::cout << bits_val << std::endl;
 				
 				//supporting 1536, 2048 (DEFAULT), 3072, 4096, 6144, 8192
 				std::unordered_set<unsigned int> valid_bits = {1536, 2048, 3072, 4096, 6144, 8192};

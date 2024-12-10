@@ -24,7 +24,6 @@ cpp_int generate_a(Params& params) {
 
 
 	log.append_to_log("[LOG] Using a=" + a.str());
-
 	return a;
 }
 
@@ -36,7 +35,6 @@ cpp_int generate_A(Params& params) {
 		log.append_to_log("[ERR] Param p or g or a is missing.");
 		return -1;
 	}
-
 
 	cpp_int A = powm(params.g, params.a, params.p);
 	log.append_to_log("[LOG] Using A=" + A.str());

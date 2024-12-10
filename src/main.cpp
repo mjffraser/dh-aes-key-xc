@@ -1,6 +1,5 @@
 //param parsing
 #include "logger.hpp"
-#include "networking/internal/message_formatting.hpp"
 #include "networking/server.hpp"
 #include "read_args/read_args.hpp"
 
@@ -15,6 +14,7 @@
 //namespace stuff
 #include "dh_params.hpp"
 
+#include <regex>
 
 
 namespace dh {
@@ -37,13 +37,12 @@ namespace dh {
  *				 AES key.
  */
 int server(Params& params) {
+	Logger& log = Logger::get();
 	/* 1) Calculate p, g, b, B */
 	auto[p, g] = select_public_DH_params(params);			
-	//we don't technically need an err check here yet since random primes haven't been implemented.
 	params.p = p;
 	params.g = g;
 
-	//b is server's a
 	cpp_int a  = generate_a(params);
 	if (a < 0) //generate_a reports err message
 		return 1;
@@ -61,6 +60,8 @@ int server(Params& params) {
 		return 1;
 	}
 
+	log.append_to_log("[INFO] Waiting for client.");
+
 	/* 3) Receive client. */
 	int client = accept_client(server, params);
 	if (client < 0) {
@@ -68,17 +69,23 @@ int server(Params& params) {
 		return 1;
 	}
 
+	log.append_to_log("[INFO] Accepted client connection.");
+
 	/* 4) Send client p||g. */	
 	if (send_p_g(client, params) < 0) {
 		server_teardown(server, client);
 		return 1;
 	}
 
+	log.append_to_log("[INFO] Sent client p||g.");
+
 	/* 5) Receive A from the client. */
 	if (recv_client_B(client, params) < 0) {
 		server_teardown(server, client);
 		return 1;
 	}
+
+	log.append_to_log("[INFO] Calculating DH key.");
 
 	/* 5.1) Calculate DH key */
 	if ((params.dh_key = generate_key(params)) < 0) {
@@ -94,15 +101,21 @@ int server(Params& params) {
 
 	std::vector<char> decrypted_message;
 	int res = recv_encrypted_message(client, params, decrypted_message);
+	std::cout << "Top secret message: ";
 	for (auto& c : decrypted_message) {
 		std::cout << c;
 	} std::cout << std::endl;
 
 
-
 	server_teardown(server, client);
 	return 0;
 }
+
+/*
+ *
+ */
+static const std::regex user_input{R"(^[ -~]+$)"};
+
 
 /* 
  * client protocol
@@ -123,6 +136,7 @@ int server(Params& params) {
  * 6) Send encrypted message.
  */
 int client(Params& params) {
+	Logger& log = Logger::get();
 	/* 1) Create socket for client to contact server through. */	
 	int client = create_client(params);
 	if (client < 0) {
@@ -133,13 +147,26 @@ int client(Params& params) {
 	/* 1.1) Before connecting, get user input */
 	std::string message;
 	std::cout << "Please enter your top secret message to be delivered: ";
-	std::cin >> message;
-	
+	std::getline(std::cin, message);	
+
+	std::smatch match;	
+
+	while (!std::regex_match(message, user_input)) {
+		std::cout << "Please only provide printable ASCII chars (32-126)." << std::endl;
+		std::cout << "Please enter your top secret message to be delivered: ";
+		std::getline(std::cin, message);
+	}
+
+	log.append_to_log("[INFO] Connecting to server.");
+
 	/* 2) Connect to the server. */
 	if (connect_to_server(client, params) != 0) {
 		client_teardown(client);
 		return 1;
 	}
+
+	log.append_to_log("[INFO] Connected.");
+	log.append_to_log("[INFO] Receiving p||g.");
 
 	/* 3) Get p||g. */
 	cpp_int p, g;
@@ -147,6 +174,9 @@ int client(Params& params) {
 		client_teardown(client);
 		return 1;
 	}
+
+	log.append_to_log("[INFO] Calculating private values.");
+
 
 	//a
 	if ((params.a = generate_a(params)) < 0) {
@@ -166,11 +196,15 @@ int client(Params& params) {
 		return 1;
 	}
 
-	/* 5) Recieve B */
+	log.append_to_log("[INFO] Receiving B...");
+
+	/* 5) Receive B */
 	if (recv_server_B(client, params) < 0) {
 		client_teardown(client);
 		return 1;
 	}
+
+	log.append_to_log("[INFO] Calculating DH key.");
 
 	//dh key
 	if ((params.dh_key = generate_key(params)) < 0) {
@@ -191,9 +225,6 @@ int client(Params& params) {
 } //NAMESPACE DH
 
 
-
-
-
 int main(int argc, char* argv[]) {
 	//object that will house all info needed
 	dh::Params params;
@@ -202,23 +233,19 @@ int main(int argc, char* argv[]) {
 	if (dh::parse_args(argc, argv, params) == 1)
 		return 1;
 
+	//initialize the logger with debug flag and log path
 	dh::Logger& log = dh::Logger::get();
 	std::string logPath = params.log_path;
 	if (!logPath.empty())
-		log.initialize(logPath, params.debug);
+		log.initialize(logPath, params.debug, params.quiet, params.verbose);
 
-	if (params.server) {
-		return server(params);
-	} 
-
-	else {
-		return client(params);	
+	try {
+		if (params.server) 
+			return server(params);
+		else 
+			return client(params);	
+	} catch (...) { //anything happens we want to be able to see the log
+		return 1;
 	}
 }
 
-
-
-
-	// cpp_int a;
-	// a = cpp_int(dh::cleanString(dh::P_6144_BITS));
-	// std::cout << a.backend().size() * sizeof(boost::multiprecision::limb_type) * 8 << std::endl;

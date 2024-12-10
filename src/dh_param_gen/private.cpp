@@ -12,6 +12,7 @@ cpp_int generate_a(Params& params) {
 		log.append_to_log("[ERR] Prime p is not initialized.");
 		return -1;
 	}
+	cpp_int& p = params.p;
 	int p_bits = params.p.backend().size() * sizeof(boost::multiprecision::limb_type) * 8;
 
 	//We choose our secret exponent a [1, 2^256]
@@ -20,8 +21,18 @@ cpp_int generate_a(Params& params) {
 	cpp_int upper(2);
 	upper = boost::multiprecision::pow(upper, p_bits); 
 	upper -= 1; //avoid case p-1
-	cpp_int a = rand_between(lower, upper);
+	cpp_int a = 0;
 
+	//these should be avoided by rand_between, but we check them anyway
+	//we also check that our chosen exponent isn't too weak.
+	while (a == 0   ||
+				 a == 1   ||
+				 a == p-1 ||
+				 (a.backend().size() * sizeof(boost::multiprecision::limb_type) * 8) < 256
+	)
+		 a = rand_between(lower, upper);
+
+	
 
 	log.append_to_log("[LOG] Using a=" + a.str());
 	return a;

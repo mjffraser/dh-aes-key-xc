@@ -5,7 +5,6 @@
 #include "logger.hpp"
 #include "networking/internal/message_formatting.hpp"
 #include "networking/internal/socket_util.hpp"
-#include <ostream>
 
 namespace dh {
 
@@ -24,7 +23,7 @@ int connect_to_server(int socket, Params& params) {
 int recv_dh_pub(int socket, Params& params) {
 	Logger& log = Logger::get();
 	std::vector<char> buffer;
-	ssize_t res = recv_message(socket, buffer, 5);
+	ssize_t res = recv_message(socket, buffer);
 	if (res < 0) 
 		return -1;
 
@@ -33,7 +32,7 @@ int recv_dh_pub(int socket, Params& params) {
 	std::vector<std::string> messages = parse_message(formatted_message);
 
 	if (messages.size() != 2) {
-		log.append_to_log("[ERR] Message recieved does not appear to be p||g");
+		log.append_to_log("[ERR] Message received does not appear to be p||g");
 		return -1;
 	}
 
@@ -47,16 +46,23 @@ int recv_dh_pub(int socket, Params& params) {
 }
 
 int send_server_A(int client, Params& params) {
+	Logger& log = Logger::get();
 	cpp_int& A = params.A;
 
 	std::string A_hex = itoh(A);
-	return send_message(client, A_hex.c_str(), A_hex.length());
-	//no need to format since we're sending a single value
+
+	ssize_t sent = send_message(client, A_hex.c_str(), A_hex.length());
+	if (sent != A_hex.length()+4) {
+		log.append_to_log("[ERR] Could not send A to server.");
+		return -1;
+	} 
+
+	return 0;
 }
 
 int recv_server_B(int client, Params& params) {
 	std::vector<char> buffer;
-	ssize_t res = recv_message(client, buffer, 3);
+	ssize_t res = recv_message(client, buffer);
 	if (res < 0)
 		return -1;
 
@@ -70,8 +76,6 @@ void unsign(const char* from, unsigned char* to, size_t len) {
 		to[i] = (unsigned char)from[i];
 }
 
-
-
 int send_encrypted_message(int client,
 													 Params& params,
 													 const char* message, 
@@ -82,8 +86,9 @@ int send_encrypted_message(int client,
 		log.append_to_log("[ERR] DH key wasn't made available to generate the AES key.");
 		return -1;
 	}
+	log.append_to_log("[INFO] Obtaining AES-key...");
 	auto [key, nonce] = aes_keygen(params.dh_key, params);
-		
+	log.append_to_log("[INFO] Done.");
 	
 	unsigned char aes_key   [32];
 	unsigned char aes_iv    [12];
@@ -98,6 +103,14 @@ int send_encrypted_message(int client,
 	std::memcpy(aes_key, key.data(),   sizeof(aes_key));
 	std::memcpy(aes_iv,  nonce.data(), sizeof(aes_iv));
 
+	//If debug we convert AES key and IV to hex and log
+	if (params.debug) {
+		std::string aes_key_hex = stoh(aes_key, 32);
+		std::string aes_iv_hex  = stoh(aes_iv,  12);
+		log.append_to_log("[LOG] AES-KEY=" + aes_key_hex);
+		log.append_to_log("[LOG] AES-IV="  + aes_iv_hex);
+	}
+
 	int res = encrypt(plaintext, message_len, aes_key, aes_iv, ciphertext, tag, params);
 	if (res < 0) {
 		log.append_to_log("[ERR] Encryption failed.");
@@ -111,6 +124,8 @@ int send_encrypted_message(int client,
 		std::make_pair(tag_hex.data(), tag_hex.length()),
 		std::make_pair(ciphertext_hex.data(), ciphertext_hex.length())
 	});
+
+	log.append_to_log("[INFO] Sending encrypted message to server.");
 	
 	return send_message(client, final_message.c_str(), final_message.length());
 }

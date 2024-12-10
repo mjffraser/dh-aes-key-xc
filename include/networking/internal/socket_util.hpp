@@ -62,16 +62,15 @@ ssize_t send_message(int socket,
  * Receives a message of unknown size into the end of the buffer. Appends
  * the data rather than overwriting, since it may take several calls of 
  * this function to receive the entire message. Will timeout after the 
- * provided number of seconds. 
+ * provided number of seconds. The first 4 bytes received encode the 
+ * length of the remaining message. This function will only return after
+ * it has received all the bytes encoded in the first 4 bytes.
  *
  * Returns:
  * - bytes received on sucess
- * - 0 on successful tranmission of entire message. This signals the entire
- *   message is in the buffer.
  * - a negative result on error.
  */
 ssize_t recv_message(int socket, 
-										 std::vector<char>& buffer, 
-										 int timeout);
+										 std::vector<char>& buffer);
 
 }

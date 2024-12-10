@@ -7,7 +7,11 @@ namespace dh {
 /*
  * create_server
  *
- * Creates server socket and returns the socket descriptor
+ * Creates server socket.
+ *
+ * Returns:
+ * - socket descriptor on success.
+ * - a negative value on error.
  */
 int create_server(Params& params);
 
@@ -33,10 +37,10 @@ int accept_client(int server, Params& params);
 /* 
  * send_p_g
  *
- * Sends p & g to the client. 
+ * Sends p||g to the client. 
  *
  * Returns: 
- * - bytes sent (message len)
+ * - 0 on success 
  * - a negative result on failure, terminate both sockets
  *   in this case.
  */
@@ -45,10 +49,10 @@ int send_p_g(int client, Params& params);
 /*
  * recv_A
  *
- * Recieves B from client. 
+ * Receives B from client into params. 
  *
  * Returns:
- * - the cpp_int B on success,
+ * - 0 on success
  * - a negative result on failure, terminate both sockets
  *   in this case.
  */
@@ -60,7 +64,8 @@ int recv_client_B(int client, Params& params);
  * Sends A to client.
  *
  * Returns:
- * - a negative result on failture, terminate both sockets
+ * - 0 on success
+ * - a negative result on failure, terminate both sockets
  *   in this case.
  */
 int send_client_A(int client, Params& params);
@@ -71,14 +76,15 @@ int send_client_A(int client, Params& params);
  * Receives the AES encrypted message and tag from the client,
  * decrypts it, and writes to the provided plaintext buffer. 
  *
- * This function expects that the client just received B, and is
- * calculating the AES key, which is slow. An extra timeout delay
- * is inserted while waiting to receive the message.
- *
  * Expects:
+ * - client socket
+ * - params containing dh_key
  * - buffer: a variable size buffer to write the message to.
  *
- * Returns a negative result on failure.
+ * Returns:
+ * - 0 on success
+ * - a negative result on failure, terminate both sockets
+ *   in this case.
  */
 int recv_encrypted_message(int client,
 													 Params& params,

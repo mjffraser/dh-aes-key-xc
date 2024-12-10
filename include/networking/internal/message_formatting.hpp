@@ -35,14 +35,39 @@ std::string stoh(unsigned char* ciphertext, size_t len);
 /*
  * htos
  *
- * Takes the string from above and converts it back
+ * Takes the hex string from above and converts it back
  * to unsigned char's.
  */
 void htos(std::string& ciphertext_h, unsigned char* ciphertext, size_t len);
 
 
 using Message = std::pair<char*, size_t>;
+
+/*
+ * format_message
+ *
+ * Creates a message of the form:
+ *	one||two||...||n-1||n
+ *
+ * where one, two, ..., n-1, n, are the n messages in 
+ * strings.
+ *
+ * Returns:
+ * - the message
+ */
 std::string format_message( std::initializer_list<Message> strings);
+
+/*
+ * parse_message
+ *
+ * Strips the above formatting.
+ *
+ * Places the messages one, two, ..., n-1, n, into a vector and
+ * returns it where they're the n messages put through format_message().
+ *
+ * Returns:
+ * - the vector with the induvidual messages.
+ */
 std::vector<std::string> parse_message(const std::string& formatted);
 
 }

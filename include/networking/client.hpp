@@ -7,7 +7,11 @@ namespace dh {
 /*
  * create_client
  *
- * Creates client socket and returns the socket descriptor
+ * Creates client socket.
+ *
+ * Returns:
+ * - socket descriptor on success.
+ * - a negative result on error.
  */
 int create_client(Params& params);
 
@@ -25,7 +29,7 @@ void client_teardown(int socket);
  * Attempts to connect to the server at IP:Port
  *
  * Returns:
- * - 0 on success,
+ * - 0 on success.
  * - a negative result on error.
  */
 int connect_to_server(int socket, Params& params);
@@ -34,9 +38,12 @@ int connect_to_server(int socket, Params& params);
  * recv_dh_pub
  *
  * Contacts the server and gets the public p&g values
- * used for the key establishment.
+ * used for the key establishment. Puts p&g into 
+ * params.
  *
- * Returns a negative value on failure.
+ * Returns:
+ * - 0 on success.
+ * - a negative result on error.
  */
 int recv_dh_pub(int socket, Params& params);
 
@@ -45,20 +52,21 @@ int recv_dh_pub(int socket, Params& params);
  *
  * Sends g^a to the server.
  *
- * Returns a negative value on failure.
+ * Returns:
+ * - 0 on success.
+ * - a negative result on error.
  */
 int send_server_A(int client, Params& params);
 
 /*
  * recv_B
  *
- * Receives g^b from the server. 
+ * Receives B from the server into params.
  *
- * This function expects that the server just received A, 
- * and is calculating the AES key, which is slow. An extra
- * timeout delay is inserted while waiting to receive B.
  *
- * Returns a negative value on failure.
+ * Returns:
+ * - 0 on success.
+ * - a negative result on error.
  */
 int recv_server_B(int client, Params& params);
 
@@ -68,14 +76,14 @@ int recv_server_B(int client, Params& params);
  * Sends the AES encrypted message to the server.
  *
  * Expects:
- * - message: the encrypted data, as a hex string
- * - messsage_len
- * - tag: a hex string representing the 16-byte tag.
- *		- should be 32 chars long
- * - iv: a hex string representing the 16-byte nonce.
- *		- should be 32 chars long
+ * - client socket
+ * - params with dh_key set.
+ * - message
+ * - message length
  *
- * Returns a negative value on failure.
+ * Returns:
+ * - 0 on success.
+ * - a negative result on error.
  */
 int send_encrypted_message(int client,
 													 Params& params,

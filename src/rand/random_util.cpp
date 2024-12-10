@@ -18,11 +18,6 @@ cpp_int rand_between(cpp_int& lower, cpp_int& upper) {
 	return selected;
 }
 
-cpp_int rand_prime(unsigned int bits) {
-	//TODO
-	return cpp_int();
-}
-
 std::shared_ptr<unsigned char> random_bytes(int count) {
 	std::shared_ptr<unsigned char> bytes(new unsigned char[count], std::default_delete<unsigned char[]>());
 

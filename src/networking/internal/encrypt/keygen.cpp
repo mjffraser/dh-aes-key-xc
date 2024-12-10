@@ -36,7 +36,7 @@ std::pair<std::string, std::string> aes_keygen(cpp_int& dh_shared_key, Params& d
 	std::string salt_hex = "AES-keygen-salt";
 
 	//other
-	uint64_t scrypt_N = std::pow(2, 14);
+	uint64_t scrypt_N = std::pow(2,20);
 	uint32_t scrypt_R = 8;
 	uint32_t scrypt_P = 1;
 	

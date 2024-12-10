@@ -15,15 +15,6 @@ namespace dh {
 cpp_int rand_between(cpp_int& lower, cpp_int& upper);
 
 /*
- * rand_prime (NOT IMPLEMENTED)
- *
- * returns a random safe prime that is bits in length.
- *
- * draws bytes from a ND source from the OS.
- */
-cpp_int rand_prime  (unsigned int bits);
-
-/*
  * random_bytes
  *
  * draws count bytes from a ND source from the OS and returns them.

@@ -39,19 +39,25 @@ int send_p_g(int client, Params& params) {
 		std::make_pair(p_hex.data(), p_hex.length()),
 		std::make_pair(g_hex.data(), g_hex.length())
 	});
+
 	ssize_t sent = send_message(client, message.c_str(), message.length());
-	return sent;
+	if (sent != message.length()+4) {
+		log.append_to_log("[ERR] Could not send entire p||g.");
+		return -1;
+	}
+
+	return 0;
 }
 
 int recv_client_B(int client, Params& params) {
 	Logger& log = Logger::get();
 	std::vector<char> buffer;
-	ssize_t res = recv_message(client, buffer, 1);
+	ssize_t res = recv_message(client, buffer);
 	if (res < 0) {
-		log.append_to_log("[ERR] An error occured while recieving A.");
+		log.append_to_log("[ERR] An error occured while receiving A.");
 		return -1;
 	}
-
+	
 	std::string message(buffer.begin(), buffer.end());
 	params.B = htoi(message);
 	return 0;
@@ -66,7 +72,13 @@ int send_client_A(int client, Params& params) {
 	}
 
 	std::string A_hex = itoh(A); 
-	return send_message(client, A_hex.c_str(), A_hex.length());
+	ssize_t sent = send_message(client, A_hex.c_str(), A_hex.length());
+	if (sent != A_hex.length()+4) {
+		log.append_to_log("[ERR] An error occured while sending A to client.");
+		return -1;
+	}
+
+	return 0;
 }
 
 void sign(const unsigned char* from, std::vector<char>& to, size_t len) {
@@ -85,7 +97,10 @@ int recv_encrypted_message(int client,
 		return -1;
 	}
 
+	log.append_to_log("[INFO] Obtaining AES-key...");
 	auto [key, nonce] = aes_keygen(params.dh_key, params);
+	log.append_to_log("[INFO] Done.");
+
 	unsigned char			aes_key[32];
 	unsigned char			aes_iv [12];
 	std::vector<char> buff;
@@ -94,14 +109,24 @@ int recv_encrypted_message(int client,
 	std::memcpy(aes_key, key.data(),   sizeof(aes_key));
 	std::memcpy(aes_iv,  nonce.data(), sizeof(aes_iv));
 
-	ssize_t res = recv_message(client, buff, 3);
+	//If debug we convert AES key and IV to hex and log
+	if (params.debug) {
+		std::string aes_key_hex = stoh(aes_key, 32);
+		std::string aes_iv_hex  = stoh(aes_iv,  12);
+		log.append_to_log("[LOG] AES-KEY=" + aes_key_hex);
+		log.append_to_log("[LOG] AES-IV="  + aes_iv_hex);
+	}
+
+	log.append_to_log("[INFO] Receiving encrypted message...");
+	ssize_t res = recv_message(client, buff);
 	if (res < 0)
 		return -1;
+	log.append_to_log("[INFO] Done.");
 
 	std::string formatted_message(buff.begin(), buff.end());
 	std::vector<std::string> messages(parse_message(formatted_message));
 	if (messages.size() != 2) {
-		log.append_to_log("[ERR] Message recieved does not appear to be tag||ciphertext");
+		log.append_to_log("[ERR] Message received does not appear to be tag||ciphertext");
 		return -1;
 	}
 

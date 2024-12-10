@@ -30,14 +30,14 @@ int parse_networking_fields(int argc, char* argv[], Params& params) {
 		std::string arg(argv[i]);
 
 		//server/client flag
-		if (arg == "--server" || arg == "-s") {
+		if (arg == "--server") {
 			server_flag = true;
-		} else if (arg == "--client" || arg == "-c") {
+		} else if (arg == "--client") {
 			server_flag = false;
 		} 
 
 		//bits
-		else if (arg == "--bits" || arg == "-b") {
+		else if (arg == "--bits") {
 			if ((i+1) < argc) {
 				unsigned int bits_val = (unsigned int) std::stoul(argv[i+1]);
 				
@@ -56,7 +56,7 @@ int parse_networking_fields(int argc, char* argv[], Params& params) {
 		}
 
 		//ip
-		else if (arg == "--ip" || arg == "-i") {
+		else if (arg == "--ip") {
 			if ((i+1) < argc) {
 				std::string addr(argv[i+1]);
 				if (validate_IP(addr))
@@ -66,7 +66,7 @@ int parse_networking_fields(int argc, char* argv[], Params& params) {
 		}
 			
 		//port number
-		else if (arg == "--port" || arg == "-p") {
+		else if (arg == "--port") {
 			if ((i+1) < argc) {
 				unsigned int port_no = (unsigned int) std::stoul(argv[i+1]);
 
@@ -82,6 +82,19 @@ int parse_networking_fields(int argc, char* argv[], Params& params) {
 				
 				++i;
 			}
+		} 
+
+		else if (arg.find("--") == std::string::npos &&
+						 arg.find("-")  != std::string::npos) {
+			if (arg.find("s") != std::string::npos)
+				server_flag = true;
+			if (arg.find("c") != std::string::npos)
+				server_flag = false;
+			if (arg.find("s") != std::string::npos &&
+					arg.find("c") != std::string::npos) {
+				std::cerr << "[ERR] Specified as both client and server." << std::endl;
+				return -1;
+			}
 		}
 	}
 
@@ -89,7 +102,7 @@ int parse_networking_fields(int argc, char* argv[], Params& params) {
 	if (!server_flag) {
 		std::cerr << "[ERR] Specified as neither client nor server. What am I?" << std::endl;
 		std::cerr << "USAGE: -c or --client for client, -s or --server for server." << std::endl;
-		return 1;
+		return -1;
 	} else {
 		params.server = server_flag.value();
 	}

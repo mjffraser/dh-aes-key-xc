@@ -127,18 +127,12 @@ ssize_t send_message(int socket, const char* message, size_t len) {
 	return total;
 }
 
-ssize_t recv_message(int socket, std::vector<char>& buffer, int timeout) {
+ssize_t recv_message(int socket, std::vector<char>& buffer) {
 	Logger& log = Logger::get();
 	log.append_to_log("[LOG] Receiving message...");
 
 	ssize_t total = 0;
 	std::vector<char> temp(1024);
-	struct timeval tv;
-	tv.tv_sec = timeout;
-	tv.tv_usec = 0;
-	if (setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof(tv)) < 0) 
-		log.append_to_log("[WARN] Could not set recv timeout. This could cause unstable transmission, or failure altogether later on.");
-	
 
 	ssize_t received = 1;
 	uint32_t message_len = 0;
@@ -149,6 +143,17 @@ ssize_t recv_message(int socket, std::vector<char>& buffer, int timeout) {
 		if (received < 0) {
 			log.append_to_log("[ERR] An error occured while receiving a message.");
 			return -1;
+		} 
+
+		else if (received == 0) {
+			if (total > 4 && total == message_len) {
+				buffer.erase(buffer.begin(), buffer.begin()+4);
+				return total;
+			}	else {
+				log.append_to_log("[ERR] An error occured while receiving a message.");
+				return -1;
+			}
+
 		}
 
 		else {

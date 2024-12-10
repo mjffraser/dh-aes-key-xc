@@ -12,8 +12,9 @@ namespace dh {
  * 
  * Sets the relevant fields in params. 
  *
- * returns 0 if all good, -1 on error due to critical
- * missing info.
+ * Returns:
+ * - 0 on success
+ * - a negative value on error.
  */
 int parse_networking_fields(int argc, char* argv[], Params& params);
 	

@@ -39,18 +39,21 @@ void parse_general_fields(int argc, char* argv[], Params& params) {
 		std::string arg(argv[i]);
 		
 		//debug flag (DEFAULT - FALSE)
-		if (arg == "--debug" || arg == "-d") {
+		if (arg == "--debug") {
 			params.debug = true;	
 		} 
-	
-		//vetted primes flag (DEFAULT - TRUE (use vetted primes))
-		else if (arg == "--generatePrimes")  {
-			params.vetted_primes = false;
-		} 
 
+		else if (arg == "--quiet") {
+			params.quiet = true;
+		}
+
+		else if (arg == "--verbose") {
+			params.verbose = true;
+		}
+	
 		//log path (should be followed by path so: --log /home/.../log.txt)
 		//relative paths are also allowed (so: --log log.txt)
-		else if (arg == "--log" || arg == "-l") {
+		else if (arg == "--log") {
 			if ((i+1) < argc) {
 				std::string path(argv[i+1]);
 				if (validate_log_path(path)) 
@@ -59,6 +62,17 @@ void parse_general_fields(int argc, char* argv[], Params& params) {
 			} else {
 				std::cout << "[WARN] No log path supplied. USAGE: --logPath [path]" << std::endl;
 			}
+		} 
+
+		//combined flags like: -sdq for server, debug, quiet
+		else if (arg.find("--") == std::string::npos &&
+						 arg.find("-")  != std::string::npos) {
+			if (arg.find("q") != std::string::npos)
+				params.quiet = true;
+			if (arg.find("d") != std::string::npos)
+				params.debug = true;
+			if (arg.find("v") != std::string::npos)
+				params.verbose = true;
 		}
 	}
 }	

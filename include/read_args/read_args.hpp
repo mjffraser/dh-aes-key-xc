@@ -14,7 +14,7 @@ namespace dh {
  *
  * Returns:
  * - 0 on success
- * - 1 on critical error
+ * - a negative value on critical error.
  */
 int parse_args(int argc, char* argv[], Params& params);
 	

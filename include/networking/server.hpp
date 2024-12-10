@@ -77,17 +77,11 @@ int send_client_A(int client, Params& params);
  *
  * Expects:
  * - buffer: a variable size buffer to write the message to.
- * - tag: the hex string representing the 16-byte tag. 
- *		- should be 32 chars long.
- * - iv: the hex string representing the 16-byte nonce.
- *		- should be 32 chars long
  *
  * Returns a negative result on failure.
  */
 int recv_encrypted_message(int client,
-													 std::vector<char>& buffer, 
-													 char* tag,
-													 char* iv);
-
+													 Params& params,
+													 std::vector<char>& buffer);
 
 }

@@ -1,4 +1,4 @@
-#include "encrypt/keygen.hpp"
+#include "networking/internal/encrypt/keygen.hpp"
 #include "dh_params.hpp"
 #include "logger.hpp"
 
@@ -19,7 +19,7 @@ std::pair<std::string, std::string> aes_keygen(cpp_int& dh_shared_key, Params& d
 	Logger&				log						= Logger::get();
 	EVP_KDF*			kdf;
 	EVP_KDF_CTX*	kctx;
-	unsigned char out[32+16]; //256-bit AES key, 16-byte IV
+	unsigned char out[32+12]; //256-bit AES key, 12-byte IV
 	OSSL_PARAM		params[6];
 	OSSL_PARAM*   p = params;
 
@@ -52,7 +52,7 @@ std::pair<std::string, std::string> aes_keygen(cpp_int& dh_shared_key, Params& d
 	}
 
 	std::string aes_key(&out[0], &out[0]+32);
-	std::string aes_iv(&out[32], &out[32]+16);
+	std::string aes_iv(&out[32], &out[32]+12);
 
 	return std::make_pair(aes_key, aes_iv);
 }

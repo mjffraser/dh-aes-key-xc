@@ -20,16 +20,13 @@ set(DH_PARAMETER_GEN_SRC
 	src/dh_param_gen/public.cpp
 )
 
-set(AES_ENCRYPTION_SRC
-	src/encrypt/aes_gcm.cpp
-	src/encrypt/keygen.cpp
-)
-
 set(NETWORK_SRC
 	src/networking/server.cpp
 	src/networking/client.cpp
 	src/networking/internal/message_formatting.cpp
 	src/networking/internal/socket_util.cpp
+	src/networking/internal/encrypt/aes_gcm.cpp
+	src/networking/internal/encrypt/keygen.cpp
 )
 
 set(ALL_SRC

@@ -1,6 +1,6 @@
 //param parsing
-#include "encrypt/keygen.hpp"
 #include "logger.hpp"
+#include "networking/internal/message_formatting.hpp"
 #include "networking/server.hpp"
 #include "read_args/read_args.hpp"
 
@@ -86,15 +86,19 @@ int server(Params& params) {
 		return 1;
 	}
 
-	auto [key, iv] = aes_keygen(params.dh_key, params);
-
 	/* 6) Send B */
 	if (send_client_A(client, params) < 0) {
 		server_teardown(server, client);
 		return 1;
 	}
 
-	std::cout << key << std::endl;
+	std::vector<char> decrypted_message;
+	int res = recv_encrypted_message(client, params, decrypted_message);
+	for (auto& c : decrypted_message) {
+		std::cout << c;
+	} std::cout << std::endl;
+
+
 
 	server_teardown(server, client);
 	return 0;
@@ -105,6 +109,7 @@ int server(Params& params) {
  *
  * Manages the client protocol. 
  * 1) Create socket for client to contact server through.
+ *		1.1) Before connecting, get user input.
  * 2) Connet to the server.
  * 3) Get p||g. 
  *		3.1) Calculate a, A.
@@ -124,6 +129,11 @@ int client(Params& params) {
 		client_teardown(client);
 		return 1;
 	}
+
+	/* 1.1) Before connecting, get user input */
+	std::string message;
+	std::cout << "Please enter your top secret message to be delivered: ";
+	std::cin >> message;
 	
 	/* 2) Connect to the server. */
 	if (connect_to_server(client, params) != 0) {
@@ -168,11 +178,11 @@ int client(Params& params) {
 		return 1;
 	}	
 
-	auto [key, iv] = aes_keygen(params.dh_key, params);
-	std::cout << key << std::endl;
-
-
-
+	/* 6)  Send encrypted message. */
+	if (send_encrypted_message(client, params, message.c_str(), message.length()) < 0 ) {
+		client_teardown(client);
+		return 1;
+	}
 
 	client_teardown(client);
 	return 0;

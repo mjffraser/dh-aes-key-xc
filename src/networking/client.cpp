@@ -1,5 +1,7 @@
 #include "networking/client.hpp"
 #include "dh_params.hpp"
+#include "networking/internal/encrypt/aes_gcm.hpp"
+#include "networking/internal/encrypt/keygen.hpp"
 #include "logger.hpp"
 #include "networking/internal/message_formatting.hpp"
 #include "networking/internal/socket_util.hpp"
@@ -63,12 +65,55 @@ int recv_server_B(int client, Params& params) {
 	return 0;
 }
 
-int send_encrypted_message(Params& params,
-													 char* message, 
-													 int message_len, 
-													 char* tag, 
-													 char* iv) {
-	return 0;
+void unsign(const char* from, unsigned char* to, size_t len) {
+	for (size_t i = 0; i < len; ++i) 
+		to[i] = (unsigned char)from[i];
 }
+
+
+
+int send_encrypted_message(int client,
+													 Params& params,
+													 const char* message, 
+													 size_t message_len) {
+
+	Logger& log = Logger::get();
+	if (params.dh_key < 0) {
+		log.append_to_log("[ERR] DH key wasn't made available to generate the AES key.");
+		return -1;
+	}
+	auto [key, nonce] = aes_keygen(params.dh_key, params);
+		
+	
+	unsigned char aes_key   [32];
+	unsigned char aes_iv    [12];
+	unsigned char plaintext [message_len];
+	unsigned char ciphertext[message_len];
+	unsigned char tag       [16];
+
+	//convert message to unsigned char for encryption
+	unsign(message, plaintext, message_len);	
+
+	//copy AES key and IV
+	std::memcpy(aes_key, key.data(),   sizeof(aes_key));
+	std::memcpy(aes_iv,  nonce.data(), sizeof(aes_iv));
+
+	int res = encrypt(plaintext, message_len, aes_key, aes_iv, ciphertext, tag, params);
+	if (res < 0) {
+		log.append_to_log("[ERR] Encryption failed.");
+		return -1;
+	}	
+
+	//convert encrypted message to a hex string representing the same data 
+	std::string ciphertext_hex = stoh(ciphertext, message_len);
+	std::string tag_hex = stoh(tag, sizeof(tag));
+	std::string final_message = format_message({
+		std::make_pair(tag_hex.data(), tag_hex.length()),
+		std::make_pair(ciphertext_hex.data(), ciphertext_hex.length())
+	});
+	
+	return send_message(client, final_message.c_str(), final_message.length());
+}
+
 
 }

@@ -1,4 +1,4 @@
-#include "encrypt/aes_gcm.hpp"
+#include "networking/internal/encrypt/aes_gcm.hpp"
 #include "dh_params.hpp"
 #include "logger.hpp"
 #include <openssl/evp.h>
@@ -32,8 +32,8 @@ int encrypt(unsigned char* plaintext,
 	if (1 != EVP_EncryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL))
 		err_out("[ERR] Couldn't init AES-GCM.", log, params);
 
-	//set iv length (128-bits)
-	if (1 != EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, 16, NULL))
+	//set iv length (96-bits)
+	if (1 != EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, 12, NULL))
 		err_out("[ERR] Couldn't set IV length for AES.", log, params);
 
 	//init key & iv
@@ -46,11 +46,11 @@ int encrypt(unsigned char* plaintext,
 	ciphertext_len += len;
 
 	//finalize
-	if (EVP_EncryptFinal_ex(ctx, ciphertext+len, &len) != 1)
+	if (1 != EVP_EncryptFinal_ex(ctx, ciphertext+len, &len))
 		err_out("[ERR] Couldn't finalize encryption", log, params);
 
 	//get tag 
-	if (EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, 16, tag) != 1)
+	if (1 != EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_GET_TAG, 16, tag))
 		err_out("[ERR] Could not retrieve encryption tag.", log, params);
 
 	//clean up
@@ -80,8 +80,8 @@ int decrypt(unsigned char* ciphertext,
 	if (EVP_DecryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL) != 1)
 		err_out("[ERR] Couldn't init AES-GCM decryption.", log, params);
 
-	//set iv length (128-bits)
-	if (EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, 16, NULL) != 1)
+	//set iv length (96-bits)
+	if (EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, 12, NULL) != 1)
 		err_out("[ERR] Couldn't set IV length for AES.", log, params);
 
 	//init key & iv

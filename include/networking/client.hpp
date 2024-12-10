@@ -77,11 +77,10 @@ int recv_server_B(int client, Params& params);
  *
  * Returns a negative value on failure.
  */
-int send_encrypted_message(Params& params,
-													 char* message, 
-													 int message_len, 
-													 char* tag, 
-													 char* iv);
+int send_encrypted_message(int client,
+													 Params& params,
+													 const char* message, 
+													 size_t message_len);
 }
 
 

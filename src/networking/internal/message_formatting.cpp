@@ -1,4 +1,5 @@
 #include "networking/internal/message_formatting.hpp"
+#include <sstream>
 
 namespace dh {
 
@@ -10,6 +11,21 @@ std::string itoh(cpp_int &i) {
 
 cpp_int htoi(const std::string& h) {
 	return cpp_int("0x"+h);
+}
+
+std::string stoh(unsigned char* ciphertext, size_t len) {
+	std::ostringstream oss;
+	oss << std::hex << std::setfill('0');
+	for (size_t i = 0; i < len; ++i) 
+		oss << std::setw(2) << (int)ciphertext[i];
+	return oss.str();
+}
+
+void htos(std::string& ciphertext_h, unsigned char* ciphertext, size_t len) {
+	for (size_t i = 0; i < len; ++i) {
+		std::string byte = ciphertext_h.substr(i*2, 2);
+		ciphertext[i] = (unsigned char)std::stoul(byte, nullptr, 16);
+	}	
 }
 
 std::string format_message(std::initializer_list<Message> strings) {

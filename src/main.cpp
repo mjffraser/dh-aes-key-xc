@@ -101,21 +101,23 @@ int server(Params& params) {
 
 	std::vector<char> decrypted_message;
 	int res = recv_encrypted_message(client, params, decrypted_message);
-	std::cout << "Top secret message: ";
-	for (auto& c : decrypted_message) {
-		std::cout << c;
-	} std::cout << std::endl;
-
-
 	server_teardown(server, client);
+	
+	std::stringstream ss;
+	ss << "Top secret message: ";
+	for (auto& c : decrypted_message) {
+		ss << c;
+	}	
+
+	log.append_to_log(ss.str());
 	return 0;
 }
 
 /*
- *
+ * a quick regex to restrict user input to the ascii
+ * printable characters.
  */
 static const std::regex user_input{R"(^[ -~]+$)"};
-
 
 /* 
  * client protocol
@@ -148,8 +150,6 @@ int client(Params& params) {
 	std::string message;
 	std::cout << "Please enter your top secret message to be delivered: ";
 	std::getline(std::cin, message);	
-
-	std::smatch match;	
 
 	while (!std::regex_match(message, user_input)) {
 		std::cout << "Please only provide printable ASCII chars (32-126)." << std::endl;

@@ -23,8 +23,8 @@ int Logger::initialize(const std::string& path, bool debug, bool quiet, bool ver
 	if (setup)
 		return 0;
 	setup = true;
-	this->debug = debug;
-	this->quiet = quiet;
+	this->debug   = debug;
+	this->quiet   = quiet;
 	this->verbose = verbose;
 
 	if (!this->debug) 

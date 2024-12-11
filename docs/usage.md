@@ -4,6 +4,7 @@
 Windows support is unknown. Linux should work fine on any modern kernel with the following:
 
 ### Required:
+> g++ | C++17
 > CMake ver. >3.28 \
 > Boost (multiprecision::cpp_int)\
 > OpenSSL (libcrypto)

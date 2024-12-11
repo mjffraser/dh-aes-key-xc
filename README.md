@@ -7,7 +7,7 @@ This is a toy implementation of the Diffie-Hellman (DH) key exchange protocol ov
 
 This is written in conjunction with a project on [CWE-215: Insertion of Sensitive Information Into Debugging Code](https://cwe.mitre.org/data/definitions/215.html), a common software vulnerability where vital information is leaked due to code meant to assist in debugging. DH is a prime example of how leaking vital data could compromise security of a given software. 
 
-This software was written to intentionally include this vulnerability to demonstate it, and then was further corrected to guard against it. This branch contains the secured code. 
+This software was written to intentionally include this vulnerability to demonstate it, and then was further corrected to guard against it. This branch contains the vulnerable code, and documentation about how it could potentially be exploited to break DH.
 
 ---
 
@@ -15,4 +15,4 @@ If you'd like to read more about CWE-215:
 
 [Blog Post 1 Link]() \
 [Blog Post 2 Link]() \
-[Video Link]() \
+[Video Link]() 

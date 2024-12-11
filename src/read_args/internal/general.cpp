@@ -34,7 +34,13 @@ bool validate_log_path(const std::string& path) {
 	return result;
 }
 
-void parse_general_fields(int argc, char* argv[], Params& params) {
+
+static const std::string help_msg = "USAGE: ./dh-key-xc <args>\n"
+																		"FOR AVAILABLE <args> SEE docs/usage.md\n"
+																		"MIN SERVER USAGE: ./dh-key-xc -s\n"
+																		"MIN CLIENT USAGE: ./dh-key-xc -c";
+
+int parse_general_fields(int argc, char* argv[], Params& params) {
 	for (int i = 1; i < argc; ++i) {
 		std::string arg(argv[i]);
 		
@@ -64,6 +70,11 @@ void parse_general_fields(int argc, char* argv[], Params& params) {
 			}
 		} 
 
+		else if (arg == "--help") {
+			std::cout << help_msg << std::endl;
+			return -1;
+		}
+
 		//combined flags like: -sdq for server, debug, quiet
 		else if (arg.find("--") == std::string::npos &&
 						 arg.find("-")  != std::string::npos) {
@@ -73,8 +84,14 @@ void parse_general_fields(int argc, char* argv[], Params& params) {
 				params.debug = true;
 			if (arg.find("v") != std::string::npos)
 				params.verbose = true;
+			if (arg.find("h") != std::string::npos) {
+				std::cout << help_msg << std::endl;
+				return -1;
+			}
 		}
 	}
+
+	return 0;
 }	
 
 }

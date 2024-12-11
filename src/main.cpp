@@ -230,7 +230,7 @@ int main(int argc, char* argv[]) {
 	dh::Params params;
 
 	//read args, init general & network fields
-	if (dh::parse_args(argc, argv, params) == 1)
+	if (dh::parse_args(argc, argv, params) == 0)
 		return 1;
 
 	//initialize the logger with debug flag and log path

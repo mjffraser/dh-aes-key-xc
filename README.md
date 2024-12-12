@@ -4,7 +4,9 @@ This is a toy implementation of the Diffie-Hellman (DH) key exchange protocol ov
 
 ***Please DO NOT use this for any information that should actually be kept properly secret. Please DO use this to interact with and become familiar with DH as a concept.***
 
+
 ## How it's vulnerable: ## 
+
 
 This is written to demonstrate an example of [CWE-215: Insertion of Sensitive Information Into Debugging Code](https://cwe.mitre.org/data/definitions/215.html), a common software vulnerability where vital information is leaked due to code meant to assist in debugging. DH is a prime example of how leaking vital data, for instance to verify key calculations as the software developer, could compromise the entire security of a given software. 
 

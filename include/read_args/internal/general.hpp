@@ -12,8 +12,10 @@ namespace dh {
  * 
  * Sets the relevant fields in params. 
  *
- * On any error defaults are used.
+ * Returns:
+ * - 0 on success
+ * - -1 on "error" (help menu)
  */
-void parse_general_fields(int argc, char* argv[], Params& params);
+int parse_general_fields(int argc, char* argv[], Params& params);
 
 }

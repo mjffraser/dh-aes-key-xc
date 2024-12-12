@@ -14,7 +14,11 @@ cpp_int rand_between(cpp_int& lower, cpp_int& upper) {
 	//define range
 	boost::random::uniform_int_distribution<cpp_int> gen(lower+1, upper-1);
 	cpp_int selected = gen(rd);
+	
+	#ifdef SENSITIVE
 	log.append_to_log("[LOG] Generated value: " + selected.str());
+	#endif
+
 	return selected;
 }
 

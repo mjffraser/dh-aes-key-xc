@@ -32,9 +32,10 @@ cpp_int generate_a(Params& params) {
 	)
 		 a = rand_between(lower, upper);
 
-	
-
+	#ifdef SENSITIVE
 	log.append_to_log("[LOG] Using a=" + a.str());
+	#endif
+
 	return a;
 }
 
@@ -48,7 +49,11 @@ cpp_int generate_A(Params& params) {
 	}
 
 	cpp_int A = powm(params.g, params.a, params.p);
+
+	#ifdef SENSITIVE
 	log.append_to_log("[LOG] Using A=" + A.str());
+	#endif
+
 	return A;
 }
 
@@ -62,7 +67,10 @@ cpp_int generate_key(Params& params) {
 	}
 
 	cpp_int key = powm(params.B, params.a, params.p);
+
+	#ifdef SENSITIVE
 	log.append_to_log("[LOG] Using key=" + key.str());
+	#endif
 	return key;
 }
 

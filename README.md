@@ -19,3 +19,7 @@ If you'd like to read more about CWE-215:
 [Blog Post 1 Link]() \
 [Blog Post 2 Link]() \
 [Video Link]() 
+
+## Code Tabbing:
+
+I prefer to use a tabbing of 2 spaces for my C/C++ code. If you don't adjust your Github appearance settings to match, certain code sections where I've done alignment with tabs could get *very* ugly.

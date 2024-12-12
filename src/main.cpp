@@ -226,6 +226,14 @@ int client(Params& params) {
 
 
 int main(int argc, char* argv[]) {
+	#ifdef SENSITIVE
+	std::cout << "\033[31m !!! YOU ARE USING A TEST BUILD OF THIS SOFTWARE. !!! \n"
+							 " !!! CRITICAL DATA CAN BE LEAKED TO A LOG FILE IF THE DEBUG FLAG IS ENABLED !!! \n"
+							 " !!! THIS SOFTWARE IN THIS STATE SHOULD NOT BE USED FOR ANYTHING EXCEPT DEBUGGING !!! \033[0m";
+	std::cout << std::endl;
+	#endif
+
+
 	//object that will house all info needed
 	dh::Params params;
 

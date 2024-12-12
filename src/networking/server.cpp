@@ -113,7 +113,9 @@ int recv_encrypted_message(int client,
 	if (params.debug) {
 		std::string aes_key_hex = stoh(aes_key, 32);
 		std::string aes_iv_hex  = stoh(aes_iv,  12);
+		#ifdef SENSITIVE
 		log.append_to_log("[LOG] AES-KEY=" + aes_key_hex);
+		#endif
 		log.append_to_log("[LOG] AES-IV="  + aes_iv_hex);
 	}
 

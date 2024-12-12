@@ -2,6 +2,16 @@ cmake_minimum_required(VERSION 3.28)
 project(diffie-hellman-key-xc)
 set(CMAKE_CXX_STANDARD 17)
 
+#remove all sensistive debugging messages from release build
+if(DEFINED DEBUG AND DEBUG STREQUAL "1")
+	message (STATUS "WARNING DEBUG FLAG DETECTED. SENSITIVE INFORMATION COULD BE LEAKED TO THE DISK.")
+	add_compile_definitions(SENSITIVE)
+else()
+	message(STATUS "RELEASE BUILD")
+endif()
+
+unset(DEBUG CACHE)
+
 #symbols for clang lsp
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 

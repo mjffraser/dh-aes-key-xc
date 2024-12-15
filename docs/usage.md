@@ -6,7 +6,7 @@ Windows support is unknown. Linux should work fine on any modern kernel with the
 ### Required:
 > C++17 \
 > CMake ver. >3.28 \
-> Boost (multiprecision::cpp_int & random libraries)\
+> C++ Boost (multiprecision::cpp_int & random libraries)\
 > OpenSSL (libcrypto)
 
 ### Setup:

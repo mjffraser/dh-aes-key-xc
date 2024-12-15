@@ -50,10 +50,11 @@ int Logger::initialize(const std::string& path, bool debug, bool quiet, bool ver
 
 
 int Logger::append_to_log(const std::string& message, bool printed) {
-	if (((message.find("[ERR]")  != std::string::npos)								) ||
-			((message.find("[WARN]") != std::string::npos) && !this->quiet) ||
-			((message.find("[INFO]") != std::string::npos) && !this->quiet) ||
-			( this->verbose                                               )) {
+	if (((message.find("[ERR]")								!= std::string::npos)								 ) ||
+		  ((message.find("Top secret message:") != std::string::npos)                ) ||
+			((message.find("[WARN]")							!= std::string::npos) && !this->quiet) ||
+			((message.find("[INFO]")							!= std::string::npos) && !this->quiet) ||
+			( this->verbose                                                            )) {
 		if (!printed) {
 			std::cout << message << std::endl;
 		}

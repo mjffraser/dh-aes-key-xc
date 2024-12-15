@@ -8,8 +8,10 @@ This is written to demonstrate an example of [CWE-215: Insertion of Sensitive In
 
 What constitutes sensitive information is infinitely broad, but in this case there are several instances of debugging code logging values that, if obtained, could allow an adversary to recompute the agreed upon DH key, and therefore recompute the agreed upon AES key & IV. Examples of weak portions of code and why are available in a writeup in `docs/exploit.md` along with exploit code to recompute the AES-key for an example leaked DH 'a' value. Instructions for how to compile this code are available in `docs/usage.md`.
 
----
+## Firewall
+
+If you have a firewall running and attempt to use this outside of the default loopback interface you'll most likely have to make an allowance for it in your firewall.
 
 ## Code Tabbing:
 
-I prefer to use a tabbing of 2 spaces for my C/C++ code. If you don't adjust your Github appearance settings to match, certain code sections where I've done alignment with tabs could get *very* ugly. I'd recommend cloning and viewing the code in your own enviroment if possible.
+I prefer to use a tabbing of 2 spaces for my C/C++ code. If you don't adjust your Github appearance settings to match, certain code sections where I've done alignment with tabs could get *very* ugly. I'd recommend cloning and viewing the code in your own environment if possible.

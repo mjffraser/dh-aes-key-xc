@@ -18,6 +18,7 @@ find_package(OpenSSL REQUIRED)
 
 
 set(SRC
+    src/logger.cpp
     src/main.cpp
 )
 

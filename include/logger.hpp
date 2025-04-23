@@ -7,6 +7,9 @@
 
 namespace dh {
 
+//should be suffienciently large as to handle even the largest logging and error messages
+#define BUFFER_SIZE 4096
+
 /*
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Logger
@@ -21,9 +24,6 @@ namespace dh {
  */
 class Logger {
 private:
-	//should be suffienciently large as to handle even the largest logging and error messages
-	static const uint16_t BUFFER_SIZE = 4096;
-
 	//buffer to store messages before writing
 	std::array<char, BUFFER_SIZE> buffer;
 
@@ -105,18 +105,18 @@ public:
 
   /*
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-   * ____Message
+   * err/warn/status/log
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
    * -> Formats the provided message based on type, and appends it to the log
    *    if appropriate. Certain message types will also be printed to the
    *    console depending on the situation:
    *    -> Printed always:
-   *       - errMessage()
+   *       - err()
    *    -> Printed unless quiet flag set:
-   *       - warnMessage()
-   *       - statusMessage()
+   *       - warn()
+   *       - status()
    *    -> Printed only if verbose flag set:
-   *       - logMessage()
+   *       - log()
    *
    *    If debug mode is set, all messages will be recorded in the log.
    *
@@ -131,10 +131,10 @@ public:
    *    EXIT_FAILURE
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
    */
-  int logMessage   (std::string const& message);
-  int errMessage   (std::string const& message);
-  int warnMessage  (std::string const& message);
-  int statusMessage(std::string const& message);
+  int log   (std::string const& message);
+  int err   (std::string const& message);
+  int warn  (std::string const& message);
+  int status(std::string const& message);
 
   //GETTER
   static Logger& get() {

@@ -16,8 +16,15 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(Boost CONFIG)
 find_package(OpenSSL REQUIRED)
 
+set(READ-ARGS
+    src/read-args/read-args.cpp
+    src/read-args/internal/general.cpp
+    src/read-args/internal/networking.cpp
+)
 
 set(SRC
+    ${READ-ARGS}
+
     src/logger.cpp
     src/main.cpp
 )

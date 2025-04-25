@@ -22,8 +22,13 @@ set(READ-ARGS
     src/read-args/internal/networking.cpp
 )
 
+set(DH-PARAM-GEN
+    src/dh-param-gen/internal/rfc-3526-primes.cpp
+)
+
 set(SRC
     ${READ-ARGS}
+    ${DH-PARAM-GEN}
 
     src/logger.cpp
     src/main.cpp

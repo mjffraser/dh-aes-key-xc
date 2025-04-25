@@ -10,7 +10,11 @@ namespace dh {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Description:
  * -> Selects a prime p and generator g based on the bits value in the
- *    ConfigParams.
+ *    ConfigParams. If an error is returned, the prime p that was selected does
+ *    not match the size of config.bits
+ *
+ *    In this case, bits is probably a bad size, and should be adjusted to p's
+ *    size.
  *
  * Takes:
  * -> config:

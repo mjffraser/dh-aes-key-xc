@@ -1,10 +1,12 @@
 #include "dh-aes-params.hpp"
+#include "dh-param-gen/private.hpp"
+#include "dh-param-gen/public.hpp"
 #include "logger.hpp"
 #include "read-args/read-args.hpp"
 
 int main(int argc, char* argv[]) {
   #ifdef DEBUG
-  std::cerr << "\033[31m !!! YOU ARE USING A TEST BUILD OF THIS SOFTWARE. !!! \n"; 
+  std::cerr << "\033[31m !!! YOU ARE USING A TEST BUILD OF THIS SOFTWARE. !!!\033[0m\n"; 
   #endif
 
   //load config, and error out if we had a problem doing so
@@ -19,6 +21,10 @@ int main(int argc, char* argv[]) {
                    config.debug,
                    config.quiet,
                    config.verbose);
+
+  dh::DHParams dh_v;
+  dh::selectPublicDHParams(config, dh_v);
+  dh::privateA(dh_v);
 
   return 0;
 }

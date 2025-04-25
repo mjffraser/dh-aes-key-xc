@@ -23,6 +23,8 @@ set(READ-ARGS
 )
 
 set(DH-PARAM-GEN
+    src/dh-param-gen/public.cpp
+    src/dh-param-gen/private.cpp
     src/dh-param-gen/internal/rfc-3526-primes.cpp
 )
 

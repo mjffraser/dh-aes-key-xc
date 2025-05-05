@@ -12,6 +12,7 @@ endif()
 unset(DEBUG CACHE)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+add_compile_options(-Wall)
 
 find_package(Boost CONFIG)
 find_package(OpenSSL REQUIRED)
@@ -28,9 +29,16 @@ set(DH-PARAM-GEN
     src/dh-param-gen/internal/rfc-3526-primes.cpp
 )
 
+set(AES-UTIL
+    src/aes/aes-gcm.cpp
+    src/aes/aes-keygen.cpp
+    src/aes/internal/iv-formatting.cpp
+)
+
 set(SRC
     ${READ-ARGS}
     ${DH-PARAM-GEN}
+    ${AES-UTIL}
 
     src/logger.cpp
     src/main.cpp

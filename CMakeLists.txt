@@ -35,10 +35,16 @@ set(AES-UTIL
     src/aes/internal/iv-formatting.cpp
 )
 
+set(NETWORKING-UTIL
+    src/networking/internal/socket-util.cpp
+    src/networking/internal/message-formatting.cpp
+)
+
 set(SRC
     ${READ-ARGS}
     ${DH-PARAM-GEN}
     ${AES-UTIL}
+    ${NETWORKING-UTIL}
 
     src/logger.cpp
     src/main.cpp

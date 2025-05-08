@@ -84,9 +84,6 @@ void htos(std::string    const& data_hex,
           unsigned char* const  data_dest,
           size_t         const  len);
 
-
-using Message = std::pair<char*, size_t>;
-
 /*
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * formatMessage
@@ -104,6 +101,7 @@ using Message = std::pair<char*, size_t>;
  *    The constructed string.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  */
+using Message = std::pair<char*, size_t>;
 std::string formatMessage(std::initializer_list<Message> const strings);
 
 /*

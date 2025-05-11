@@ -36,8 +36,14 @@ set(AES-UTIL
 )
 
 set(NETWORKING-UTIL
-    src/networking/internal/socket-util.cpp
-    src/networking/internal/message-formatting.cpp
+    src/networking/client.cpp
+    src/networking/server.cpp
+
+    src/networking/internal/messaging.cpp
+    src/networking/internal/handshake.cpp
+
+    src/networking/internal/internal/socket-util.cpp
+    src/networking/internal/internal/message-formatting.cpp
 )
 
 set(SRC

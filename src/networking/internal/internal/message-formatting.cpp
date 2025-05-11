@@ -1,4 +1,4 @@
-#include "networking/internal/message-formatting.hpp"
+#include "networking/internal/internal/message-formatting.hpp"
 
 namespace dh {
 

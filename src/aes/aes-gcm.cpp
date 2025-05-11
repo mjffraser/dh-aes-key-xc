@@ -11,11 +11,11 @@ int aesErr(std::string const& msg, Logger& log) {
   return -1;
 }
 
-int aesEncrypt(unsigned char* const  plaintext,
-               unsigned char*        ciphertext,
-               unsigned char*        tag,
-               size_t         const  data_len,
-               AESParams      const& aes_v) {
+int aesEncrypt(unsigned char  const* const  plaintext,
+               unsigned char*               ciphertext,
+               unsigned char*               tag,
+               size_t                const  data_len,
+               AESParams             const& aes_v) {
   Logger& log = Logger::get();
   EVP_CIPHER_CTX* ctx;
   int len;

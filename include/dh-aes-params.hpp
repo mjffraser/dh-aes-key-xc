@@ -100,7 +100,7 @@ struct DHParams {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  */
 struct AESParams {
-  unsigned char aes_key[32];
+  unsigned char aes_key[32] = {0};
   cpp_int       aes_iv = -1;
 };
 

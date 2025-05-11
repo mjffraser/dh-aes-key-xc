@@ -36,11 +36,11 @@ namespace dh {
  *    -1
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  */
-int aesEncrypt(unsigned char* const  plaintext,
-               unsigned char*        ciphertext,
-               unsigned char*        tag,
-               size_t         const  data_len,
-               AESParams      const& aes_v);
+int aesEncrypt(unsigned char  const* const  plaintext,
+               unsigned char*               ciphertext,
+               unsigned char*               tag,
+               size_t                const  data_len,
+               AESParams             const& aes_v);
 
 /*
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "dh-aes-params.hpp"
+#include <optional>
 
 namespace dh {
 
@@ -75,50 +76,60 @@ int initConnection(int socket, ConfigParams const& params);
  * sendMessage
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Description:
- * -> Sends a message over a socket, encoding the length of the message at the
- *    start as 4-bytes.
+ * -> Sends a message over the provided socket. If an AESParams object is also
+ *    provided, encrypt the message with the key and nonce, then send it.
+ *    Encrypted messages are converted to hex strings for the transmission to
+ *    avoid ambiguity.
  *
  * Takes:
  * -> socket:
- *    The connected socket to send over.
+ *    The socket to use.
  * -> message:
- *    The message to send.
- * -> message_len:
- *    How long the message is.
+ *    The message to send. If encryption is NOT performed (no aes_v), this is
+ *    sent as-is, and should already be formatted for the other side to
+ *    understand.
+ * -> aes_v:
+ *    A container with the values needed for encryption. If present, the message
+ *    is encrypted.
  *
  * Returns:
  * -> On success:
- *    The total bytes sent. This should be message_len+4. 
+ *    EXIT_FAILURE
  * -> On failure:
- *    -1
+ *    EXIT_FAILURE
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  */
-ssize_t sendMessage(int                 socket,
-                    char   const* const message,
-                    size_t        const message_len);
+int sendMessage(int                             socket,
+                std::string              const& message,
+                std::optional<AESParams> const& aes_v=std::nullopt);
 
 /*
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * recvMessage
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Description:
- * -> Receives a message sent with the above function into a buffer.
- * 
+ * -> Receieves a message over the provided socket. If an AESParams object is
+ *    also provided, assumes the message is encrypted, and will attempt to
+ *    decrypt it with the values inside aes_v.
+ *
  * Takes:
  * -> socket:
- *    The connected socket to receive the message from.
- * -> buffer:
- *    A buffer to receive data into.
+ *    The socket to use.
+ * -> message:
+ *    Where to write the received (and possibly decrypted) message to.
+ * -> aes_v:
+ *    A container with the values needed for decryption. If present, the message
+ *    decrypted if possible with the sent tag.
  *
  * Returns:
  * -> On success:
- *    The length of the received message. This will be the message_len passed
- *    into sendMessage().
+ *    EXIT_SUCCESS
  * -> On failure:
- *    -1
+ *    EXIT_FAILURE
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  */
-ssize_t recvMessage(int                socket,
-                    std::vector<char>& buffer);
+int recvMessage(int                             socket,
+                std::string&                    message,
+                std::optional<AESParams> const& aes_v=std::nullopt);
 
 } //dh

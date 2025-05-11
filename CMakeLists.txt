@@ -44,6 +44,8 @@ set(NETWORKING-UTIL
 
     src/networking/internal/internal/socket-util.cpp
     src/networking/internal/internal/message-formatting.cpp
+
+    src/networking/internal/internal/internal/socket-send-recv.cpp
 )
 
 set(SRC

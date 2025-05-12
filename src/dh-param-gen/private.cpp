@@ -31,7 +31,7 @@ int privateA(DHParams& dh_v) {
   a = randBetween(cpp_int(1), p-1);
 
   #ifdef DEBUG 
-  log.status("Using a=" + a.str());
+  log.log("Using a=" + a.str());
   #endif
 
   return EXIT_SUCCESS;
@@ -47,7 +47,7 @@ int publicA(DHParams& dh_v) {
   }
 
   dh_v.A = powm(dh_v.g, dh_v.a, dh_v.p);
-  log.status("Using A=" + dh_v.A.str());
+  log.log("Using A=" + dh_v.A.str());
   return EXIT_SUCCESS;
 }
 
@@ -62,7 +62,7 @@ int dhKey(DHParams& dh_v) {
 
   dh_v.dh_key = powm(dh_v.B, dh_v.a, dh_v.p);
   #ifdef DEBUG
-  log.status("Using dh_key=" + dh_v.dh_key.str());
+  log.log("Using dh_key=" + dh_v.dh_key.str());
   #endif
 
   return EXIT_SUCCESS;

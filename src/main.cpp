@@ -1,7 +1,6 @@
 #include "dh-aes-params.hpp"
-#include "dh-param-gen/private.hpp"
-#include "dh-param-gen/public.hpp"
 #include "logger.hpp"
+#include "networking/run.hpp"
 #include "read-args/read-args.hpp"
 
 int main(int argc, char* argv[]) {
@@ -22,9 +21,5 @@ int main(int argc, char* argv[]) {
                    config.quiet,
                    config.verbose);
 
-  dh::DHParams dh_v;
-  dh::selectPublicDHParams(config, dh_v);
-  dh::privateA(dh_v);
-
-  return 0;
+  return dh::dhAesKXC(config);
 }

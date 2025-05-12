@@ -36,8 +36,7 @@ set(AES-UTIL
 )
 
 set(NETWORKING-UTIL
-    src/networking/client.cpp
-    src/networking/server.cpp
+    src/networking/run.cpp
 
     src/networking/internal/messaging.cpp
     src/networking/internal/handshake.cpp

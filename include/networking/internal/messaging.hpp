@@ -6,6 +6,7 @@ namespace dh {
 
 /*
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * sendEncryptedMessage
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Description:
  * -> Ensures values are in aes_v, encrypts the provided message, and sends it
@@ -33,6 +34,7 @@ int sendEncryptedMessage(int                socket,
                          AESParams   const& aes_v);
 /*
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * recvEncryptedMessage
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Description:
  * -> Ensures values are in aes_v, receives an encrypted message, decrypts if

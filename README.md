@@ -1,6 +1,6 @@
 # Diffie-Hellman Key Exchange with AES_GCM Message Encryption
 
-This is a toy implementation of the Diffie-Hellman (DH) key exchange protocol over POSIX sockets. DH is a method used to establish a symmetric cryptographic key over an unsecure channel, often used in combination with protocols like TLS or SSH. This program doubles as a server/client all-in-one implementation, where a server instance opens a socket and waits for a client connection to start the key exchange. Once the client connects and the key is agreed upon, it's put through a key-derivation function (scrypt) and a 256-bit AES key is produced for encrypting subsequent messages. An encrypted chat session then begins, and the client and server can exchange messages encrypted with AES-256 in Galaois COunter Mode over an unsecured connection.
+This is a toy implementation of the Diffie-Hellman (DH) key exchange protocol over POSIX sockets. DH is a method used to establish a symmetric cryptographic key over an unsecure channel, often used in combination with protocols like TLS or SSH. This program doubles as a server/client all-in-one implementation, where a server instance opens a socket and waits for a client connection to start the key exchange. Once the client connects and the key is agreed upon, it's put through a key-derivation function (scrypt) and a 256-bit AES key is produced for encrypting subsequent messages. An encrypted chat session then begins, and the client and server can exchange messages encrypted with AES-256 in Galaois Counter Mode over an unsecured connection.
 
 ## Usage:
 

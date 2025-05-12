@@ -21,6 +21,27 @@ std::string getInput() {
   return message;
 }
 
+void sendReplyLoop(int socket, AESParams& aes_v) {
+  Logger& log = Logger::get();
+  while (true) {
+    std::string msg;
+    log.status("Waiting for message...");
+    if (EXIT_FAILURE == recvEncryptedMessage(socket, msg, aes_v)) {
+      return; 
+    }
+
+    std::cout << msg << std::endl;
+    aes_v.aes_iv++; //increment iv
+
+    log.status("Enter reply...");
+    std::string reply = getInput();
+    if (EXIT_FAILURE == sendEncryptedMessage(socket, reply, aes_v)) {
+      return;
+    }
+    aes_v.aes_iv++; //increment iv
+  }
+}
+
 namespace client {
 
 int runClient(ConfigParams const& params) {
@@ -38,6 +59,7 @@ int runClient(ConfigParams const& params) {
   }
 
   log.status("Connected.");
+  log.status("Doing DH handshake...");
   std::optional<DHParams> handshake_res = dhHandshake(server);
   if (!handshake_res) {
     log.err("Failed DH handshake.");
@@ -46,6 +68,7 @@ int runClient(ConfigParams const& params) {
   }
   DHParams dh_v = *handshake_res;
 
+  log.status("Generating AES key...");
   std::optional<AESParams> keygen_res = doKeygen(dh_v);
   if (!keygen_res) {
     log.err("Failed to generate AES key.");
@@ -54,9 +77,20 @@ int runClient(ConfigParams const& params) {
   }
   AESParams aes_v = *keygen_res;
 
+  //client sends first message 
+  log.status("Enter message...");
   std::string msg = getInput();
-  sendEncryptedMessage(server, msg, aes_v);
+  if (EXIT_FAILURE == sendEncryptedMessage(server, msg, aes_v)) {
+    log.err("Could not send any message.");
+    teardown(server);
+    return EXIT_FAILURE;
+  }
+  aes_v.aes_iv++; //increment iv
 
+  //enter loop
+  sendReplyLoop(server, aes_v);
+  log.status("Connection terminated.");
+  teardown(server);
   return EXIT_SUCCESS;
 }
 
@@ -80,6 +114,7 @@ int runServer(ConfigParams const& params) {
   }
 
   log.status("Client connected.");
+  log.status("Doing DH handshake...");
   std::optional<DHParams> handshake_res = dhHandshake(client, params);
   if (!handshake_res) {
     log.err("Failed DH handshake.");
@@ -88,6 +123,7 @@ int runServer(ConfigParams const& params) {
   }
   DHParams dh_v = *handshake_res;
 
+  log.status("Generating AES key...");
   std::optional<AESParams> keygen_res = doKeygen(dh_v);
   if (!keygen_res) {
     log.err("Failed to generate AES key.");
@@ -95,11 +131,11 @@ int runServer(ConfigParams const& params) {
     return EXIT_FAILURE;
   }
   AESParams aes_v = *keygen_res;
-
-  std::string msg;
-  recvEncryptedMessage(client, msg, aes_v);
-  std::cout << msg << std::endl;
-
+  
+  //enter loop
+  sendReplyLoop(client, aes_v);
+  log.status("Connection terminated.");
+  teardown(listener, client);
   return EXIT_SUCCESS;
 }
 
